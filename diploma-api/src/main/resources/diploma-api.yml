@@ -110,100 +110,6 @@ paths:
         204:
           description: Success
 
-  /advisor/topics:
-    get:
-      tags: [ Advisor ]
-      description: Get list of available topics
-      operationId: getAvailableTopics
-      responses:
-        '200':
-          description: Status is OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TopicInfoByBlocksDto'
-
-  /advisor/topics/{topicId}:
-    get:
-      tags: [ Advisor ]
-      summary: Get topic info by id
-      operationId: getTopic
-      parameters:
-        - in: path
-          name: topicId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the topic to get
-      responses:
-        '200':
-          description: Status is OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TopicInfoByBlocksDto'
-    delete:
-      tags: [ Advisor ]
-      summary: Delete topic by id
-      operationId: deleteTopic
-      parameters:
-        - in: path
-          name: topicId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the topic to delete
-      responses:
-        '204':
-          description: Deleted
-
-  /advisor/topics/create:
-    post:
-      summary: Creates a new topic
-      tags: [ Advisor ]
-      operationId: createTopic
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TopicCreateUpdateRequest'
-      responses:
-        201:
-          description: Success
-
-  /advisor/topics/update:
-    put:
-      summary: Updates a topic
-      tags: [ Advisor ]
-      operationId: updateTopic
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TopicCreateUpdateRequest'
-      responses:
-        204:
-          description: Success
-
-  /advisor/requests:
-    get:
-      tags: [ Advisor ]
-      summary: Get team-topic requests
-      operationId: getAdvisorRequests
-      responses:
-        '200':
-          description: Status is OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TopicInfoByBlocksDto'
-
   /auth/signup:
     post:
       tags: [ Auth ]
@@ -445,42 +351,6 @@ paths:
         201:
           description: Success
 
-  /admin/topic/{topicId}:
-    get:
-      tags: [ Admin ]
-      summary: Get topic by id
-      operationId: getTopicInfo
-      parameters:
-        - in: path
-          name: topicId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the topic to get
-      responses:
-        200:
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TopicInfoByBlocksDto'
-    delete:
-      tags: [ Admin ]
-      summary: Delete topic by id
-      operationId: deleteTopicInfo
-      parameters:
-        - in: path
-          name: topicId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the topic to delete
-      responses:
-        204:
-          description: Deleted
-
   /admin/group/create:
     post:
       summary: Creates a new group
@@ -543,72 +413,6 @@ paths:
             format: int64
           required: true
           description: Numeric ID of the group to delete
-      responses:
-        204:
-          description: Deleted
-
-  /admin/initial/create:
-    post:
-      summary: Creates a new initial
-      tags: [ Admin ]
-      operationId: createInitial
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InitialDto'
-      responses:
-        201:
-          description: Success
-
-  /admin/initial/update:
-    put:
-      summary: Updates info about initial
-      tags: [ Admin ]
-      operationId: updateInitialInfo
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InitialDto'
-      responses:
-        201:
-          description: Success
-
-  /admin/initial/{initialId}:
-    get:
-      tags: [ Admin ]
-      summary: Get initial by id
-      operationId: getInitialInfo
-      parameters:
-        - in: path
-          name: initialId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the group to get
-      responses:
-        200:
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InitialInfoByBlocksDto'
-    delete:
-      tags: [ Admin ]
-      summary: Delete initial by id
-      operationId: deleteInitialInfo
-      parameters:
-        - in: path
-          name: initialId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the initial to delete
       responses:
         204:
           description: Deleted
@@ -783,52 +587,6 @@ paths:
         201:
           description: SUCCESS
 
-  /commission/{defenceId}/question/create:
-    post:
-      tags: [ Commission ]
-      summary: Creates question of defence
-      operationId: CreateDefenceQuestion
-      parameters:
-        - in: path
-          name: defenceId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the defence to get
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/QuestionCreateUpdateRequest'
-      responses:
-        201:
-          description: SUCCESS
-
-  /commission/{defenceId}/question/update:
-    put:
-      tags: [ Commission ]
-      summary: Updates question of defence
-      operationId: UpdateDefenceQuestion
-      parameters:
-        - in: path
-          name: defenceId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the defence to get
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/QuestionCreateUpdateRequest'
-      responses:
-        200:
-          description: SUCCESS
-
   /secretary/defence:
     get:
       tags: [ Secretary ]
@@ -887,96 +645,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DefenceInfoByBlocksDto'
-
-  /secretary/{userId}/document/protocol-first:
-    get:
-      tags: [ Secretary ]
-      summary: Get user documents
-      operationId: getDocumentFirstProtocol
-      parameters:
-        - in: path
-          name: userId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the user to get
-      responses:
-        200:
-          description: Returns PDF
-          content:
-            application/pdf:
-              schema:
-                type: string
-                format: byte
-
-  /secretary/{userId}/document/protocol-second:
-    get:
-      tags: [ Secretary ]
-      summary: Get user documents
-      operationId: getDocumentSecondProtocol
-      parameters:
-        - in: path
-          name: userId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the user to get
-      responses:
-        200:
-          description: Returns PDF
-          content:
-            application/pdf:
-              schema:
-                type: string
-                format: byte
-
-  /secretary/{defenceId}/question/create:
-    post:
-      tags: [ Secretary ]
-      summary: Creates question of defence
-      operationId: createQuestion
-      parameters:
-        - in: path
-          name: defenceId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the defence to get
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/QuestionCreateUpdateRequest'
-      responses:
-        201:
-          description: SUCCESS
-
-  /secretary/{defenceId}/question/update:
-    put:
-      tags: [ Secretary ]
-      summary: Updates question of defence
-      operationId: updateQuestion
-      parameters:
-        - in: path
-          name: defenceId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the defence to get
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/QuestionCreateUpdateRequest'
-      responses:
-        200:
-          description: SUCCESS
 
   /secretary/{defenceId}/grades:
     get:
@@ -1051,40 +719,6 @@ components:
         grade:
           type: integer
 
-    TopicDto:
-      description: Topic DTO
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        selected:
-          type: boolean
-
-    TopicInfoByBlocksDto:
-      description: Topic of project
-      type: object
-      properties:
-        topic:
-          description: Topic
-          type: object
-          $ref: '#/components/schemas/TopicDto'
-        creator:
-          $ref: '#/components/schemas/UserDto'
-
-    InitialDto:
-      description: Group initials
-      type: object
-      properties:
-        id:
-          description: Initial id
-          type: integer
-          format: int64
-        initial:
-          description: Initial
-          type: string
 
     GroupDto:
       description: Group info's
@@ -1096,8 +730,6 @@ components:
           format: int64
         name:
           type: string
-        initial:
-          type: string
 
     GroupInfoByBlocksDto:
       description: Group full info
@@ -1105,22 +737,10 @@ components:
       properties:
         group:
           $ref: '#/components/schemas/GroupDto'
-        initial:
-          $ref: '#/components/schemas/InitialDto'
         users:
           type: array
           items:
             $ref: '#/components/schemas/UserDto'
-
-    InitialInfoByBlocksDto:
-      type: object
-      properties:
-        initial:
-          $ref: '#/components/schemas/InitialDto'
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupDto'
 
     UserInfoByBlocksDto:
       description: User full info
@@ -1190,32 +810,12 @@ components:
           format: int64
         name:
           type: string
-        topicId:
-          type: integer
-          format: int64
-        advisorId:
-          type: integer
-          format: int64
         choices:
           type: integer
       required:
         - name
         - creatorId
 
-    TopicCreateUpdateRequest:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        initial:
-          type: string
-      required:
-        - creatorId
-        - name
-        - initial
 
     RegisterRequest:
       type: object
@@ -1324,10 +924,6 @@ components:
           $ref: '#/components/schemas/TeamInfoWithMembersDto'
         stage:
           $ref: '#/components/schemas/StageDto'
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuestionDto'
 
     DefenceDto:
       type: object
@@ -1350,8 +946,6 @@ components:
         defenceDate:
           type: string
           format: date-time
-        topic:
-          type: string
         team:
           type: string
         stage:
@@ -1366,46 +960,12 @@ components:
         name:
           type: string
 
-    QuestionCreateUpdateRequest:
-      type: object
-      properties:
-        questionId:
-          type: integer
-          format: int64
-        description:
-          type: string
-        studentIds:
-          type: array
-          items:
-            type: integer
-            format: int64
-        questionerId:
-          type: integer
-          format: int64
-
-    QuestionDto:
-      type: object
-      properties:
-        questionId:
-          type: integer
-          format: int64
-        description:
-          type: string
-        responderName:
-          type: string
-        questioner:
-          type: string
-
     TeamInfoByBlocksDto:
       type: object
       properties:
         team:
           $ref: '#/components/schemas/TeamShortInfoDto'
         creator:
-          $ref: '#/components/schemas/UserDto'
-        topic:
-          $ref: '#/components/schemas/TopicDto'
-        advisor:
           $ref: '#/components/schemas/UserDto'
         defences:
           type: array
@@ -1427,18 +987,10 @@ components:
     #          type: array
     #          items:
     #            $ref: '#/components/schemas/TeamInfoByBlocksDto'
-    #        topics:
-    #          type: array
-    #          items:
-    #            $ref: '#/components/schemas/TopicInfoByBlocksDto'
     #        stages:
     #          type: array
     #          items:
     #            $ref: '#/components/schemas/StageDto'
-    #        initials:
-    #          type: array
-    #          items:
-    #            $ref: '#/components/schemas/InitialDto'
     #        users:
     #          type: array
     #          items:
@@ -1506,10 +1058,6 @@ components:
           format: int64
         name:
           type: string
-        topic:
-          type: string
-        advisor:
-          type: string
 
     CreateDefenceRequest:
       type: object
@@ -1525,35 +1073,6 @@ components:
         stageId:
           type: integer
           format: int64
-
-    QuestionInfoDto:
-      type: object
-      properties:
-        description:
-          type: string
-        questioner:
-          $ref: '#/components/schemas/UserDto'
-
-
-    InfoForDocumentTemplateDto:
-      type: object
-      properties:
-        commissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserDto'
-        student:
-          $ref: '#/components/schemas/StudentShortInfoDto'
-        defence:
-          $ref: '#/components/schemas/DefenceShortInfoDto'
-        advisor:
-          $ref: '#/components/schemas/UserDto'
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuestionInfoDto'
-        grade:
-          type: integer
 
     StudentShortInfoDto:
       type: object

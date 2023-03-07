@@ -24,23 +24,17 @@ public class AdminService {
 
     private final RoleRepository roleRepository;
 
-    private final InitialRepository initialRepository;
-
     private final GroupRepository groupRepository;
 
     private final TeamRepository teamRepository;
 
     private final DefenceRepository defenceRepository;
 
-    private final TopicRepository topicRepository;
-
     private final DefenceCommissionRepository defenceCommissionRepository;
 
     private final DefenceMapper defenceMapper;
 
     private final TeamMapper teamMapper;
-
-    private final TopicMapper topicMapper;
 
     private final RoleMapper roleMapper;
 
@@ -49,8 +43,6 @@ public class AdminService {
     private final UserMapper userMapper;
 
     private final StageMapper stageMapper;
-
-    private final InitialMapper initialMapper;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -65,8 +57,6 @@ public class AdminService {
         return teams.stream().map(team -> TeamShortInfoDto.builder()
                 .id(team.getId())
                 .name(team.getName())
-                .advisor(team.getAdvisor() != null ? team.getAdvisor().getFirstName() + " " + team.getAdvisor().getLastName() : null)
-                .topic(team.getTopic() != null ? team.getTopic().getName() : null)
                 .build()).collect(Collectors.toList());
     }
 
@@ -74,9 +64,6 @@ public class AdminService {
         teamRepository.deleteById(teamId);
     }
 
-    public void deleteTopic(Long topicId) {
-        topicRepository.deleteById(topicId);
-    }
 
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
@@ -93,21 +80,12 @@ public class AdminService {
                 .build()).collect(Collectors.toList());
         return TeamInfoByBlocksDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .advisor(userMapper.entity2dto(team.getAdvisor()))
                 .creator(userMapper.entity2dto(team.getCreator()))
-                .topic(topicMapper.entity2dto(team.getTopic()))
                 .defences(defences)
                 .members(members)
                 .build();
     }
 
-    public TopicInfoByBlocksDto getTopicInfo(Long topicId) {
-        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new EntityNotFoundException("Topic with id: " + topicId + " not found"));
-        return TopicInfoByBlocksDto.builder()
-                .topic(topicMapper.entity2dto(topic))
-                .creator(userMapper.entity2dto(topic.getCreator()))
-                .build();
-    }
 
     public UserInfoByBlocksDto getUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id: " + userId + " not found"));
@@ -122,17 +100,8 @@ public class AdminService {
         Group group = Group.builder()
                 .id(groupDto.getId() != null ? groupDto.getId() : null)
                 .name(groupDto.getName())
-                .initial(initialRepository.findByInitial(groupDto.getInitial()))
                 .build();
         groupRepository.save(group);
-    }
-
-    public void createUpdateInitial(InitialDto initialDto) {
-        Initial initial = Initial.builder()
-                .id(initialDto.getId() != null ? initialDto.getId() : null)
-                .initial(initialDto.getInitial())
-                .build();
-        initialRepository.save(initial);
     }
 
     public GroupInfoByBlocksDto getGroupInfo(Long groupId) {
@@ -141,25 +110,11 @@ public class AdminService {
         return GroupInfoByBlocksDto.builder()
                 .group(groupMapper.entity2dto(group))
                 .users(users)
-                .initial(initialMapper.entity2dto(group.getInitial()))
                 .build();
     }
 
     public void deleteGroup(Long groupId) {
         groupRepository.deleteById(groupId);
-    }
-
-    public void deleteInitial(Long initialId) {
-        initialRepository.deleteById(initialId);
-    }
-
-    public InitialInfoByBlocksDto getInitialInfo(Long initialId) {
-        Initial initial = initialRepository.findById(initialId).orElseThrow(() -> new EntityNotFoundException("Initial with id: " + initialId + " not found"));
-        List<GroupDto> groups = initial.getGroups().stream().map(groupMapper::entity2dto).collect(Collectors.toList());
-        return InitialInfoByBlocksDto.builder()
-                .initial(initialMapper.entity2dto(initial))
-                .groups(groups)
-                .build();
     }
 
     public void createUpdateStage(StageDto stageDto) {
@@ -212,18 +167,10 @@ public class AdminService {
     private List<TeamInfoByBlocksDto> getConfirmedTeams() {
         return teamRepository.findAllByConfirmedTrue().stream().map(team -> TeamInfoByBlocksDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .advisor(userMapper.entity2dto(team.getAdvisor()))
                 .creator(userMapper.entity2dto(team.getCreator()))
-                .topic(topicMapper.entity2dto(team.getTopic()))
                 .build()).collect(Collectors.toList());
     }
 
-    private List<TopicInfoByBlocksDto> getSelectedTopics() {
-        return topicRepository.findAllBySelectedTrue().stream().map(topic -> TopicInfoByBlocksDto.builder()
-                .topic(topicMapper.entity2dto(topic))
-                .creator(userMapper.entity2dto(topic.getCreator()))
-                .build()).collect(Collectors.toList());
-    }
 
     private List<UserInfoByBlocksDto> getUsers() {
         return userRepository.findAll().stream().map(user -> UserInfoByBlocksDto.builder()
@@ -235,10 +182,6 @@ public class AdminService {
 
     private List<GroupDto> getGroups() {
         return groupRepository.findAll().stream().map(groupMapper::entity2dto).collect(Collectors.toList());
-    }
-
-    private List<InitialDto> getInitials() {
-        return initialRepository.findAll().stream().map(initialMapper::entity2dto).collect(Collectors.toList());
     }
 
     public List<StageDto> getStages() {

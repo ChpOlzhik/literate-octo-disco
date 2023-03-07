@@ -20,16 +20,11 @@ public class Group {
     @Column(unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "initial_id", nullable = false)
-    private Initial initial;
-
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<User> groupUsers;
 
-    public Group(Long id, String name, Initial initial) {
+    public Group(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.initial = initial;
     }
 }

@@ -123,10 +123,10 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>8.0.0</version>
                 <configuration>
-                    <user>test</user>
-                    <password>postgres</password>
+                    <user>postgres</user>
+                    <password>Olzhastop1</password>
                     <schemas>
-                        <schema>test</schema>
+                        <schema>almatyustazy</schema>
                     </schemas>
                 </configuration>
             </plugin>

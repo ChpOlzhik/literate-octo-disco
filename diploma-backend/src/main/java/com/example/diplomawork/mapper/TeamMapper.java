@@ -12,12 +12,8 @@ public interface TeamMapper {
 
     @Mapping(target = "id", source = "teamId")
     @Mapping(target = "name", source = "name")
-    @Mapping(target = "topic.id", source = "topicId")
-    @Mapping(target = "advisor.id", source = "advisorId")
     @Mapping(target = "creator", ignore = true)
     Team request2entity(TeamCreateUpdateRequest request);
 
-    @Mapping(target = "topic", source = "topic.name")
-    @Mapping(target = "advisor", expression = "java(team.getAdvisor() != null ? team.getAdvisor().getFirstName() + \" \" + team.getAdvisor().getLastName() : null)")
     TeamShortInfoDto entity2dto(Team team);
 }

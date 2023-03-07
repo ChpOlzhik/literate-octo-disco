@@ -8,7 +8,6 @@ import com.example.diplomawork.model.Team;
 import com.example.diplomawork.model.User;
 import com.example.diplomawork.model.UserTeam;
 import com.example.diplomawork.repository.TeamRepository;
-import com.example.diplomawork.repository.TopicRepository;
 import com.example.diplomawork.repository.UserRepository;
 import com.example.diplomawork.repository.UserTeamRepository;
 import com.example.models.*;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +29,6 @@ public class StudentService {
     private final AuthService authService;
 
     private final TeamRepository teamRepository;
-
-    private final TopicRepository topicRepository;
 
     private final UserRepository userRepository;
 
@@ -50,9 +48,8 @@ public class StudentService {
                 .id(request.getTeamId() != null ? request.getTeamId() : null)
                 .name(request.getName())
                 .creator(currentUser)
-                .advisor(request.getAdvisorId() != null ? userRepository.findById(request.getAdvisorId()).orElseThrow(() -> new EntityNotFoundException("Not found")) : null)
                 .confirmed(false)
-                .topic(request.getTopicId() != null ? topicRepository.findById(request.getTopicId()).orElseThrow(() -> new EntityNotFoundException("Not found")) : null)
+                .documentURL(null)
                 .build();
         teamRepository.saveAndFlush(team);
         userTeamRepository.save(UserTeam.builder()
@@ -117,5 +114,9 @@ public class StudentService {
 
     public List<TeamShortInfoDto> getAvailableTeams() {
         return teamRepository.findAllByConfirmedFalse().stream().map(teamMapper::entity2dto).collect(Collectors.toList());
+    }
+
+    public void createUpdateTeamDocumentURL(){
+
     }
 }

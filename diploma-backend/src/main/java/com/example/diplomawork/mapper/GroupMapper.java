@@ -8,6 +8,5 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface GroupMapper {
 
-    @Mapping(target = "initial", source = "initial.initial")
     GroupDto entity2dto(Group group);
 }

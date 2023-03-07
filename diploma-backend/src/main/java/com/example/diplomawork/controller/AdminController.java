@@ -56,11 +56,6 @@ public class AdminController implements AdminApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<Void> deleteTopicInfo(Long topicId) {
-        adminService.deleteTopic(topicId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @Override
     public ResponseEntity<Void> deleteUser(Long userId) {
@@ -73,10 +68,6 @@ public class AdminController implements AdminApi {
         return ResponseEntity.ok(adminService.getTeamInfo(teamId));
     }
 
-    @Override
-    public ResponseEntity<TopicInfoByBlocksDto> getTopicInfo(Long topicId) {
-        return ResponseEntity.ok(adminService.getTopicInfo(topicId));
-    }
 
     @Override
     public ResponseEntity<UserInfoByBlocksDto> getUser(Long userId) {
@@ -90,20 +81,8 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<Void> createInitial(InitialDto initialDto) {
-        adminService.createUpdateInitial(initialDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @Override
     public ResponseEntity<Void> deleteGroupInfo(Long groupId) {
         adminService.deleteGroup(groupId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Void> deleteInitialInfo(Long initialId) {
-        adminService.deleteInitial(initialId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -113,19 +92,8 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<InitialInfoByBlocksDto> getInitialInfo(Long initialId) {
-        return ResponseEntity.ok(adminService.getInitialInfo(initialId));
-    }
-
-    @Override
     public ResponseEntity<Void> updateGroupInfo(GroupDto groupDto) {
         adminService.createUpdateGroup(groupDto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Void> updateInitialInfo(InitialDto initialDto) {
-        adminService.createUpdateInitial(initialDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

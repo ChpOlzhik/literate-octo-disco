@@ -49,12 +49,6 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<UserTeam> userTeams;
 
-    @OneToMany(mappedBy = "questioner", fetch = FetchType.LAZY)
-    List<Question> userQuestions;
-
-    @OneToMany(mappedBy = "responder", fetch = FetchType.LAZY)
-    List<Question> questionsResponders;
-
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     List<UserCommissionGrade> commissionsGrades;
 

@@ -1,7 +1,6 @@
 package com.example.diplomawork.service;
 
 import com.example.diplomawork.mapper.DefenceMapper;
-import com.example.diplomawork.mapper.QuestionMapper;
 import com.example.diplomawork.mapper.TeamMapper;
 import com.example.diplomawork.mapper.UserMapper;
 import com.example.diplomawork.model.*;
@@ -25,8 +24,6 @@ public class CommissionService {
 
     private final DefenceRepository defenceRepository;
 
-    private final QuestionRepository questionRepository;
-
     private final UserRepository userRepository;
 
     private final DefenceCommissionRepository defenceCommissionRepository;
@@ -41,40 +38,21 @@ public class CommissionService {
 
     private final DefenceMapper defenceMapper;
 
-    private final QuestionMapper questionMapper;
-
     public DefenceInfoByBlocksDto getCommissionDefence(Long defenceId) {
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
         Team team = defence.getTeam();
         List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(team.getId());
         TeamInfoWithMembersDto teamInfo = TeamInfoWithMembersDto.builder()
-                .team(teamMapper.entity2dto(team).advisor(team.getAdvisor() != null ? team.getAdvisor().getFirstName() + " " + team.getAdvisor().getLastName() : null))
+                .team(teamMapper.entity2dto(team))
                 .members(userTeams.stream().map(userTeam -> userMapper.entity2dto(userTeam.getUser())).collect(Collectors.toList()))
                 .build();
-        List<QuestionDto> questions = new ArrayList<>();
-        questionRepository.findAllByDefenceIdAndQuestionerId(defenceId, authService.getCurrentUser().getId()).forEach(question -> {
-            QuestionDto questionDto = questionMapper.entity2dto(question);
-            questionDto.setResponderName(question.getResponder().getLastName() + " " + question.getResponder().getFirstName().charAt(0) + ".");
-            questions.add(questionDto);
-        });
+
         return DefenceInfoByBlocksDto.builder()
                 .defence(defenceMapper.entity2dto(defence))
                 .team(teamInfo)
-                .questions(questions)
                 .build();
     }
 
-    public void createUpdateQuestion(Long defenceId, QuestionCreateUpdateRequest request) {
-        List<Long> studentIds = request.getStudentIds();
-        studentIds.stream().map(studentId -> Question.builder()
-                .id(request.getQuestionId() != null ? request.getQuestionId() : null)
-                .questioner(authService.getCurrentUser())
-                .description(request.getDescription())
-                .defence(defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found")))
-                .responder(userRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("User with id: " + studentId + " not found")))
-                .questioner(authService.getCurrentUser())
-                .build()).forEach(questionRepository::save);
-    }
 
     public void setGrade(Long defenceId, Long studentId, GradeDto grade) {
         User student = userRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("User with id: " + studentId + " not found"));
@@ -103,7 +81,6 @@ public class CommissionService {
                     .id(defence.getId())
                     .defenceDate(defenceCommission.getDefence().getDefenceDate())
                     .team(defenceCommission.getDefence().getTeam().getName())
-                    .topic(defenceCommission.getDefence().getTeam().getTopic().getName())
                     .stage(defence.getStage().getName())
                     .build();
             list.add(build);

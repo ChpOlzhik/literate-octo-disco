@@ -28,8 +28,5 @@ public class Defence {
     private Stage stage;
 
     @OneToMany(mappedBy = "defence", fetch = FetchType.LAZY)
-    private List<Question> defenceQuestions;
-
-    @OneToMany(mappedBy = "defence", fetch = FetchType.LAZY)
     private List<UserCommissionGrade> defenceGrades;
 }
