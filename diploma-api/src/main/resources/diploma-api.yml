@@ -699,6 +699,57 @@ paths:
         200:
           description: SUCCESS
 
+  /announcement:
+    get:
+      tags: [ Admin, Secretary ]
+      summary: Get announcements
+      operationId: getAnnouncements
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnnouncementDto'
+
+  /announcement/{announcementId}:
+    get:
+      tags: [ Admin, Secretary ]
+      summary: Get announcement by id
+      operationId: getAnnouncement
+      parameters:
+        - in: path
+          name: announcementId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the announcement to get
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnouncementInfoByBlocksDto'
+    delete:
+      tags: [ Admin ]
+      summary: Delete announcement by id
+      operationId: deleteAnnouncement
+      parameters:
+        - in: path
+          name: announcementId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the announcement to delete
+      responses:
+        204:
+          description: Deleted
+
 components:
   schemas:
 
@@ -801,6 +852,32 @@ components:
         name:
           description: Role name
           type: string
+
+    AnnouncementDto:
+      description: Announcement info
+      type: object
+      properties:
+        id:
+          description: Announcement id
+          type: integer
+          format: int64
+        title:
+          description: Announcement title
+          type: string
+        text:
+          description: Announcement text
+          type: string
+        content:
+          description: Announcement content
+          type: string
+        filename:
+          description: Announcement file name
+          type: string
+        date:
+          description: Announcement post date
+          type: string
+          format: date-time
+
 
     TeamCreateUpdateRequest:
       type: object
@@ -1049,6 +1126,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DefenceDto'
+
+    AnnouncementInfoByBlocksDto:
+      type: object
+      properties:
+        announcement:
+          $ref: '#/components/schemas/AnnouncementDto'
 
     TeamShortInfoDto:
       type: object
