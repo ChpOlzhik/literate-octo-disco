@@ -39,7 +39,7 @@ public class DiplomaWorkApplication {
 
     @Bean
     @Transactional
-    CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, GroupRepository groupRepository, TeamRepository teamRepository, UserTeamRepository userTeamRepository, StageRepository stageRepository) {
+    CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, GroupRepository groupRepository, TeamRepository teamRepository, UserTeamRepository userTeamRepository, StageRepository stageRepository, AnnouncementRepository announcementRepository, SubjectRepository subjectRepository) {
         return args -> {
 
             roleRepository.save(new Role(null, "ROLE_ADMIN"));
