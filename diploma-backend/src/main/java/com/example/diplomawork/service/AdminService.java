@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.diplomawork.model.Subject;
+
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -29,6 +32,8 @@ public class AdminService {
     private final TeamRepository teamRepository;
 
     private final DefenceRepository defenceRepository;
+
+    private final SubjectRepository subjectRepository;
 
     private final DefenceCommissionRepository defenceCommissionRepository;
 
@@ -49,6 +54,8 @@ public class AdminService {
     private final StageRepository stageRepository;
 
     private final UserTeamRepository userTeamRepository;
+
+    private final SubjectMapper subjectMapper;
 
 
 
@@ -206,5 +213,26 @@ public class AdminService {
                 .role(roleRepository.findByName("ROLE_COMMISSION"))
                 .build();
         userRepository.save(user);
+    }
+
+    public void createUpdateSubject(SubjectDto subjectDto) {
+        Subject subject = Subject.builder()
+                .id(subjectDto.getId() != null ? subjectDto.getId() : null)
+                .name(subjectDto.getName())
+                .build();
+        subjectRepository.save(subject);
+    }
+
+    public SubjectInfoByBlocksDto getSubjectInfo(Long subjectId) {
+        Subject subject = subjectRepository.findById(subjectId).orElseThrow(() -> new EntityNotFoundException("Subject with id: " + subjectId + " not found"));
+        List<UserDto> users = subject.getSubjectUsers().stream().map(userMapper::entity2dto).collect(Collectors.toList());
+        return SubjectInfoByBlocksDto.builder()
+                .subject(subjectMapper.entity2dto(subject))
+                .users(users)
+                .build();
+    }
+
+    public void deleteSubject(Long subjectId) {
+        subjectRepository.deleteById(subjectId);
     }
 }

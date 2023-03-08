@@ -417,6 +417,72 @@ paths:
         204:
           description: Deleted
 
+  /admin/subject/create:
+    post:
+      summary: Creates a new subject
+      tags: [ Admin ]
+      operationId: createSubject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectDto'
+      responses:
+        201:
+          description: Success
+
+  /admin/subject/update:
+    put:
+      summary: Updates info about subject
+      tags: [ Admin ]
+      operationId: updateSubjectInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectDto'
+      responses:
+        201:
+          description: Success
+
+  /admin/subject/{subjectId}:
+    get:
+      tags: [ Admin ]
+      summary: Get subject by id
+      operationId: getSubjectInfo
+      parameters:
+        - in: path
+          name: subjectId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the subject to get
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectInfoByBlocksDto'
+    delete:
+      tags: [ Admin ]
+      summary: Delete subject by id
+      operationId: deleteSubjectInfo
+      parameters:
+        - in: path
+          name: subjectId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the subject to delete
+      responses:
+        204:
+          description: Deleted
+
   /admin/stage/create:
     post:
       summary: Creates a new stage
@@ -699,9 +765,9 @@ paths:
         200:
           description: SUCCESS
 
-  /announcement:
+  /secretary/announcement:
     get:
-      tags: [ Admin, Secretary ]
+      tags: [ Secretary ]
       summary: Get announcements
       operationId: getAnnouncements
       responses:
@@ -714,9 +780,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/AnnouncementDto'
 
-  /announcement/{announcementId}:
+  /secretary/announcement/{announcementId}:
     get:
-      tags: [ Admin, Secretary ]
+      tags: [ Secretary ]
       summary: Get announcement by id
       operationId: getAnnouncement
       parameters:
@@ -733,9 +799,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AnnouncementInfoByBlocksDto'
+                $ref: '#/components/schemas/AnnouncementDto'
     delete:
-      tags: [ Admin ]
+      tags: [ Secretary ]
       summary: Delete announcement by id
       operationId: deleteAnnouncement
       parameters:
@@ -749,6 +815,36 @@ paths:
       responses:
         204:
           description: Deleted
+
+  /secretary/announcement/create:
+    post:
+      summary: Creates a new announcement
+      tags: [ Secretary ]
+      operationId: createAnnouncement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementCreateUpdateRequest'
+      responses:
+        201:
+          description: Success
+
+  /secretary/announcement/update:
+    put:
+      summary: Update announcement
+      tags: [ Secretary ]
+      operationId: updateAnnouncement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementCreateUpdateRequest'
+      responses:
+        201:
+          description: Success
 
 components:
   schemas:
@@ -782,12 +878,34 @@ components:
         name:
           type: string
 
+    SubjectDto:
+      description: Subject info's
+      type: object
+      properties:
+        id:
+          description: Subject id
+          type: integer
+          format: int64
+        name:
+          type: string
+
     GroupInfoByBlocksDto:
       description: Group full info
       type: object
       properties:
         group:
           $ref: '#/components/schemas/GroupDto'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDto'
+
+    SubjectInfoByBlocksDto:
+      description: Subject full info
+      type: object
+      properties:
+        subject:
+          $ref: '#/components/schemas/SubjectDto'
         users:
           type: array
           items:
@@ -877,7 +995,10 @@ components:
           description: Announcement post date
           type: string
           format: date-time
-
+        creator:
+          description: Announcement creator
+          type: integer
+          format: int64
 
     TeamCreateUpdateRequest:
       type: object
@@ -892,7 +1013,6 @@ components:
       required:
         - name
         - creatorId
-
 
     RegisterRequest:
       type: object
@@ -936,6 +1056,28 @@ components:
         - email
         - username
         - password
+
+    AnnouncementCreateUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        text:
+          type: string
+        content:
+          type: string
+        filename:
+          type: string
+        creator:
+          type: integer
+          format: int64
+      required:
+        - title
+        - creator
+
 
     TokenVerifyResponse:
       type: object
@@ -1053,30 +1195,6 @@ components:
           items:
             $ref: '#/components/schemas/UserDto'
 
-    #    AdminPanelGeneralInfoDto:
-    #      type: object
-    #      properties:
-    #        defences:
-    #          type: array
-    #          items:
-    #            $ref: '#/components/schemas/DefenceInfoByBlocksDto'
-    #        teams:
-    #          type: array
-    #          items:
-    #            $ref: '#/components/schemas/TeamInfoByBlocksDto'
-    #        stages:
-    #          type: array
-    #          items:
-    #            $ref: '#/components/schemas/StageDto'
-    #        users:
-    #          type: array
-    #          items:
-    #            $ref: '#/components/schemas/UserInfoByBlocksDto'
-    #        groups:
-    #          type: array
-    #          items:
-    #            $ref: '#/components/schemas/GroupDto'
-
     UserTeamInfoByBlockDto:
       type: object
       properties:
@@ -1126,12 +1244,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DefenceDto'
-
-    AnnouncementInfoByBlocksDto:
-      type: object
-      properties:
-        announcement:
-          $ref: '#/components/schemas/AnnouncementDto'
 
     TeamShortInfoDto:
       type: object

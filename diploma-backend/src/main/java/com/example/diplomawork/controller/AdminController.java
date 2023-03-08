@@ -2,6 +2,7 @@ package com.example.diplomawork.controller;
 
 import com.example.api.AdminApi;
 import com.example.diplomawork.service.AdminService;
+import com.example.diplomawork.service.AnnouncementService;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import java.util.List;
 public class AdminController implements AdminApi {
 
     private final AdminService adminService;
+
+    private final AnnouncementService announcementService;
 
 
     @Override
@@ -119,4 +122,28 @@ public class AdminController implements AdminApi {
         adminService.createUpdateStage(stageDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Void> createSubject(SubjectDto subjectDto) {
+        adminService.createUpdateSubject(subjectDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteSubjectInfo(Long subjectId) {
+        adminService.deleteSubject(subjectId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<SubjectInfoByBlocksDto> getSubjectInfo(Long subjectId) {
+        return ResponseEntity.ok(adminService.getSubjectInfo(subjectId));
+    }
+
+    @Override
+    public ResponseEntity<Void> updateSubjectInfo(SubjectDto subjectDto) {
+        adminService.createUpdateSubject(subjectDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
