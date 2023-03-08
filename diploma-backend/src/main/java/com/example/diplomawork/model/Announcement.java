@@ -1,6 +1,9 @@
 package com.example.diplomawork.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -15,23 +18,19 @@ public class Announcement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User creator;
 
-    @Column(name = "title")
     private String title;
 
-    @Column(name = "text")
     private String text;
 
-    @Column(name = "filename")
     private String filename;
 
-    @Column(name = "content")
     private String content;
 
-    @Column(name = "date")
+    @CreationTimestamp
     private LocalDate date;
 
 }
