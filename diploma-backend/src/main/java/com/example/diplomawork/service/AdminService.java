@@ -99,6 +99,7 @@ public class AdminService {
         return UserInfoByBlocksDto.builder()
                 .user(userMapper.entity2dto(user))
                 .group(groupMapper.entity2dto(user.getGroup()))
+                .subject(subjectMapper.entity2dto(user.getSubject()))
                 .role(roleMapper.entity2dto(user.getRole()))
                 .build();
     }
@@ -183,6 +184,7 @@ public class AdminService {
         return userRepository.findAll().stream().map(user -> UserInfoByBlocksDto.builder()
                 .user(userMapper.entity2dto(user))
                 .group(groupMapper.entity2dto(user.getGroup()))
+                .subject(subjectMapper.entity2dto(user.getSubject()))
                 .role(roleMapper.entity2dto(user.getRole()))
                 .build()).collect(Collectors.toList());
     }

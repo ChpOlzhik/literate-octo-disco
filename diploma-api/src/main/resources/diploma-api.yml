@@ -921,6 +921,8 @@ components:
           $ref: '#/components/schemas/RoleDto'
         group:
           $ref: '#/components/schemas/GroupDto'
+        subject:
+          $ref: '#/components/schemas/SubjectDto'
 
     ShortUserInfoRequest:
       type: object
