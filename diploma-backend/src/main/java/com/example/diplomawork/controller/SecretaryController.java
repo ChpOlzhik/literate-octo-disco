@@ -4,12 +4,15 @@ import com.example.api.SecretaryApi;
 import com.example.diplomawork.model.Announcement;
 import com.example.diplomawork.service.AnnouncementService;
 import com.example.diplomawork.service.SecretaryService;
+import com.example.diplomawork.service.StorageService;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,6 +21,8 @@ public class SecretaryController implements SecretaryApi {
 
     private final SecretaryService secretaryService;
     private final AnnouncementService announcementService;
+
+    private final StorageService storageService;
 
     @Override
     public ResponseEntity<List<UserDto>> getDefenceCommissions(Long defenceId) {
@@ -62,15 +67,20 @@ public class SecretaryController implements SecretaryApi {
     }
 
     @Override
-    public ResponseEntity<Void> createAnnouncement(AnnouncementCreateUpdateRequest request){
+    public ResponseEntity<CreateAnnouncementResponse> createAnnouncement(AnnouncementCreateUpdateRequest request){
+        return ResponseEntity.ok(announcementService.createUpdateAnnouncement(request));
+    }
+
+    @Override
+    public ResponseEntity<Void> updateAnnouncement(AnnouncementCreateUpdateRequest request){
         announcementService.createUpdateAnnouncement(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> updateAnnouncement(AnnouncementCreateUpdateRequest request){
-
-        announcementService.createUpdateAnnouncement(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<FileUploadResponse> uploadAnnouncementFile(Long announcementId, MultipartFile file){
+        FileUploadResponse announcementFileURL = storageService.uploadAndSetAnnouncementFile(file, announcementId);
+        return ResponseEntity.ok(announcementFileURL);
     }
+
 }

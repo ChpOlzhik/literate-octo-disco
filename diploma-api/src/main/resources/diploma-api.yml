@@ -828,8 +828,13 @@ paths:
             schema:
               $ref: '#/components/schemas/AnnouncementCreateUpdateRequest'
       responses:
-        201:
-          description: Success
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAnnouncementResponse'
+
 
   /secretary/announcement/update:
     put:
@@ -845,6 +850,34 @@ paths:
       responses:
         201:
           description: Success
+
+  /secretary/announcement/{announcementId}/uploadAnnouncementFile:
+    post:
+      summary: Upload and attach announcement file
+      tags: [ Secretary ]
+      operationId: uploadAnnouncementFile
+      parameters:
+        - in: path
+          name: announcementId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the announcement
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
+
 
 components:
   schemas:
@@ -865,6 +898,13 @@ components:
       properties:
         grade:
           type: integer
+
+    CreateAnnouncementResponse:
+      type: object
+      properties:
+        announcementId:
+          type: integer
+          format: int64
 
 
     GroupDto:
@@ -1279,4 +1319,17 @@ components:
         lastName:
           type: string
         group:
+          type: string
+
+    FileUploadRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+
+    FileUploadResponse:
+      type: object
+      properties:
+        fileUrl:
           type: string
