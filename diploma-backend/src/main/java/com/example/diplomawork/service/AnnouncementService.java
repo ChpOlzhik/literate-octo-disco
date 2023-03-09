@@ -5,6 +5,7 @@ import com.example.diplomawork.repository.AnnouncementRepository;
 import com.example.diplomawork.repository.UserRepository;
 import com.example.models.AnnouncementCreateUpdateRequest;
 import com.example.models.AnnouncementDto;
+import com.example.models.CreateAnnouncementResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +52,7 @@ public class AnnouncementService {
                 .build();
     }
 
-    public void createUpdateAnnouncement(AnnouncementCreateUpdateRequest request){
+    public CreateAnnouncementResponse createUpdateAnnouncement(AnnouncementCreateUpdateRequest request){
         Announcement newAnnouncement = Announcement.builder()
                 .id(request.getId() == null? request.getId() : null)
                 .title(request.getTitle())
@@ -60,7 +61,9 @@ public class AnnouncementService {
                 .filename(request.getFilename())
                 .creator(userRepository.getById(request.getCreator()))
                 .build();
+
         announcementRepository.save(newAnnouncement);
+        return CreateAnnouncementResponse.builder().announcementId(newAnnouncement.getId()).build();
     }
 
     public void deleteAnnouncement(Long announcementId){
