@@ -148,6 +148,11 @@ public class DiplomaWorkApplication {
                     .role(roleRepository.findByName("ROLE_SECRETARY"))
                     .password(new BCryptPasswordEncoder().encode("verySecret3$"))
                     .build());
+
+            announcementRepository.save(Announcement.builder()
+                    .title("Hello")
+                    .creator(userRepository.getById(9L))
+                    .build());
         };
     }
 }
