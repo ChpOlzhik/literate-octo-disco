@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: ozhek/almatyustazy:v1
+    image: ozhek/almatyustazy:latest
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS
     ports:
