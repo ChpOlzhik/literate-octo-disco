@@ -32,13 +32,11 @@ public class Team {
 
     private Boolean confirmed;
 
-    private String documentURL;
 
-    public Team(Long id, @NonNull String name, User creator, Boolean confirmed, String documentURL) {
+    public Team(Long id, @NonNull String name, User creator, Boolean confirmed) {
         this.id = id;
         this.name = name;
         this.creator = creator;
         this.confirmed = confirmed;
-        this.documentURL = documentURL;
     }
 }

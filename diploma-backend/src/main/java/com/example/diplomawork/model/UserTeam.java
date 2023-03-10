@@ -25,4 +25,8 @@ public class UserTeam {
     private Team team;
 
     private Boolean accepted;
+
+    private String presentationURL;
+
+    private String lessonRecordingURL;
 }

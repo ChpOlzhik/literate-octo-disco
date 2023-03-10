@@ -3,6 +3,7 @@ package com.example.diplomawork.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -35,9 +36,18 @@ public class User {
     @NonNull
     private String password;
 
+    private String profilePhoto;
+
+    private LocalDate birthDate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")

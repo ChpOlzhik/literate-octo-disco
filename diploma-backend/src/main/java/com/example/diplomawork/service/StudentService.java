@@ -49,7 +49,6 @@ public class StudentService {
                 .name(request.getName())
                 .creator(currentUser)
                 .confirmed(false)
-                .documentURL(null)
                 .build();
         teamRepository.saveAndFlush(team);
         userTeamRepository.save(UserTeam.builder()
@@ -114,9 +113,5 @@ public class StudentService {
 
     public List<TeamShortInfoDto> getAvailableTeams() {
         return teamRepository.findAllByConfirmedFalse().stream().map(teamMapper::entity2dto).collect(Collectors.toList());
-    }
-
-    public void createUpdateTeamDocumentURL(){
-
     }
 }

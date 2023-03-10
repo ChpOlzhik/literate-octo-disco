@@ -39,7 +39,7 @@ public class DiplomaWorkApplication {
 
     @Bean
     @Transactional
-    CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, GroupRepository groupRepository, TeamRepository teamRepository, UserTeamRepository userTeamRepository, StageRepository stageRepository) {
+    CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, GroupRepository groupRepository, TeamRepository teamRepository, UserTeamRepository userTeamRepository, StageRepository stageRepository, AnnouncementRepository announcementRepository, SubjectRepository subjectRepository) {
         return args -> {
 
             roleRepository.save(new Role(null, "ROLE_ADMIN"));
@@ -147,6 +147,11 @@ public class DiplomaWorkApplication {
                     .username("sec")
                     .role(roleRepository.findByName("ROLE_SECRETARY"))
                     .password(new BCryptPasswordEncoder().encode("verySecret3$"))
+                    .build());
+
+            announcementRepository.save(Announcement.builder()
+                    .title("Hello")
+                    .creator(userRepository.getById(9L))
                     .build());
         };
     }

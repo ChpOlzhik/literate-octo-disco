@@ -33,3 +33,6 @@ build/
 .vscode/
 
 */target
+
+### Google Cloud Credientials ###
+storage-credientials.json
