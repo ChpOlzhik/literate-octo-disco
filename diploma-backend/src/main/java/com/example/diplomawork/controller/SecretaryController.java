@@ -1,7 +1,6 @@
 package com.example.diplomawork.controller;
 
 import com.example.api.SecretaryApi;
-import com.example.diplomawork.model.Announcement;
 import com.example.diplomawork.service.AnnouncementService;
 import com.example.diplomawork.service.SecretaryService;
 import com.example.diplomawork.service.StorageService;
@@ -51,11 +50,6 @@ public class SecretaryController implements SecretaryApi {
     }
 
     @Override
-    public ResponseEntity<List<AnnouncementDto>> getAnnouncements(){
-        return ResponseEntity.ok(announcementService.getAnnouncements());
-    }
-
-    @Override
     public ResponseEntity<AnnouncementDto> getAnnouncement(Long announcementId){
         return ResponseEntity.ok(announcementService.getAnnouncement(announcementId));
     }
@@ -81,6 +75,28 @@ public class SecretaryController implements SecretaryApi {
     public ResponseEntity<FileUploadResponse> uploadAnnouncementFile(Long announcementId, MultipartFile file){
         FileUploadResponse announcementFileURL = storageService.uploadAndSetAnnouncementFile(file, announcementId);
         return ResponseEntity.ok(announcementFileURL);
+    }
+
+    @Override
+    public ResponseEntity<List<TeamShortInfoDto>> getTeams() {
+        return ResponseEntity.ok(secretaryService.getTeams());
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteTeam(Long teamId) {
+        secretaryService.deleteTeam(teamId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<TeamInfoByBlocksDto> getTeamInfo(Long teamId) {
+        return ResponseEntity.ok(secretaryService.getTeamInfo(teamId));
+    }
+
+    @Override
+    public ResponseEntity<Void> setTeamLessonRecording(Long teamId, SetLessonRecordingRequest request){
+        secretaryService.setTeamLessonRecording(request.getLessonRecordingURL(), teamId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

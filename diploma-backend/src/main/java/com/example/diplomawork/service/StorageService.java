@@ -1,9 +1,9 @@
 package com.example.diplomawork.service;
 
 import com.example.diplomawork.model.Announcement;
-import com.example.diplomawork.model.User;
-import com.example.diplomawork.model.UserTeam;
+import com.example.diplomawork.model.*;
 import com.example.diplomawork.repository.AnnouncementRepository;
+import com.example.diplomawork.repository.TeamRepository;
 import com.example.diplomawork.repository.UserRepository;
 import com.example.diplomawork.repository.UserTeamRepository;
 import com.example.models.FileUploadResponse;
@@ -27,13 +27,15 @@ public class StorageService {
 
     private final UserRepository userRepository;
 
+    private final TeamRepository teamRepository;
     private final UserTeamRepository userTeamRepository;
 
     @Autowired
-    public StorageService(AuthService authService, AnnouncementRepository announcementRepository, UserRepository userRepository, UserTeamRepository userTeamRepository) {
+    public StorageService(AuthService authService, AnnouncementRepository announcementRepository, UserRepository userRepository, UserTeamRepository userTeamRepository, com.example.diplomawork.repository.TeamRepository teamRepository) {
         this.authService = authService;
         this.userRepository = userRepository;
         this.userTeamRepository = userTeamRepository;
+        this.teamRepository = teamRepository;
         this.storage = StorageOptions.getDefaultInstance().getService();
         this.bucketName = "almatyustazy-profile-bucket";
         this.announcementRepository = announcementRepository;
@@ -60,10 +62,11 @@ public class StorageService {
     public FileUploadResponse uploadParticipantPresentation(MultipartFile file){
         User currentUser = authService.getCurrentUser();
         UserTeam userTeamSet = userTeamRepository.findByUserIdAndAcceptedTrue(currentUser.getId()).orElseThrow(() -> new EntityNotFoundException("Team with member id: " + currentUser.getId().toString() + " not found"));
-        String filePath = "participant_presentations/" + userTeamSet.getId().toString();
+        Team team = userTeamSet.getTeam();
+        String filePath = "participant_presentations/" + team.getName();
         String presentationURL = uploadFile(file, this.bucketName, filePath);
-        userTeamSet.setPresentationURL(presentationURL);
-        userTeamRepository.saveAndFlush(userTeamSet);
+        team.setPresentationURL(presentationURL);
+        teamRepository.saveAndFlush(team);
         return FileUploadResponse.builder().fileUrl(presentationURL).build();
     }
 

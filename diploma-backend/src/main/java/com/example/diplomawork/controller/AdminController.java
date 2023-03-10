@@ -49,28 +49,10 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<List<TeamShortInfoDto>> getTeams() {
-        return ResponseEntity.ok(adminService.getTeams());
-    }
-
-    @Override
-    public ResponseEntity<Void> deleteTeam(Long teamId) {
-        adminService.deleteTeam(teamId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @Override
     public ResponseEntity<Void> deleteUser(Long userId) {
         adminService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @Override
-    public ResponseEntity<TeamInfoByBlocksDto> getTeamInfo(Long teamId) {
-        return ResponseEntity.ok(adminService.getTeamInfo(teamId));
-    }
-
 
     @Override
     public ResponseEntity<UserInfoByBlocksDto> getUser(Long userId) {

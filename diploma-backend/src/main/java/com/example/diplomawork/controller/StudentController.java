@@ -1,6 +1,7 @@
 package com.example.diplomawork.controller;
 
 import com.example.api.StudentApi;
+import com.example.diplomawork.service.StorageService;
 import com.example.diplomawork.service.StudentService;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ public class StudentController implements StudentApi {
 
     private final StudentService studentService;
 
+    private final StorageService storageService;
+
     @Override
     public ResponseEntity<Void> createTeam(TeamCreateUpdateRequest request) {
         studentService.createUpdateTeam(request);
@@ -26,6 +29,11 @@ public class StudentController implements StudentApi {
     @Override
     public ResponseEntity<TeamInfoWithMembersDto> getTeam() {
         return ResponseEntity.ok(studentService.getTeam());
+    }
+
+    @Override
+    public ResponseEntity<FileUploadResponse> uploadAndSetPresentation(MultipartFile file){
+        return ResponseEntity.ok(storageService.uploadParticipantPresentation(file));
     }
 
 }

@@ -13,6 +13,7 @@ public interface TeamMapper {
     @Mapping(target = "id", source = "teamId")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "creator", ignore = true)
+    @Mapping(target = "presentationURL", source = "presentationURL")
     Team request2entity(TeamCreateUpdateRequest request);
 
     TeamShortInfoDto entity2dto(Team team);

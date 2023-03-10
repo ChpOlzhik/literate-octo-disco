@@ -5,7 +5,7 @@ info:
   description: The Diploma Service
 paths:
 
-  /student/uploadAndSetPresentation:
+  /student/teams/uploadAndSetPresentation:
     post:
       tags: [ Student ]
       description: Upload presentation for
@@ -234,57 +234,6 @@ paths:
       responses:
         200:
           description: SUCCESS
-
-  /admin/team:
-    get:
-      summary: Gets all teams
-      tags: [ Admin ]
-      operationId: getTeams
-      responses:
-        200:
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TeamShortInfoDto'
-
-  /admin/team/{teamId}:
-    get:
-      tags: [ Admin ]
-      summary: Get team by id
-      operationId: getTeamInfo
-      parameters:
-        - in: path
-          name: teamId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the team to get
-      responses:
-        200:
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TeamInfoByBlocksDto'
-    delete:
-      tags: [ Admin ]
-      summary: Delete user by id
-      operationId: deleteTeam
-      parameters:
-        - in: path
-          name: teamId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the team to delete
-      responses:
-        204:
-          description: Deleted
 
   /admin/team/{teamId}/defence/create:
     post:
@@ -611,6 +560,81 @@ paths:
         201:
           description: SUCCESS
 
+
+  /secretary/team:
+    get:
+      summary: Gets all teams
+      tags: [ Secretary ]
+      operationId: getTeams
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamShortInfoDto'
+
+  /secretary/team/{teamId}:
+    get:
+      tags: [ Secretary ]
+      summary: Get team by id
+      operationId: getTeamInfo
+      parameters:
+        - in: path
+          name: teamId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the team to get
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamInfoByBlocksDto'
+    delete:
+      tags: [ Secretary ]
+      summary: Delete team by id
+      operationId: deleteTeam
+      parameters:
+        - in: path
+          name: teamId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the team to delete
+      responses:
+        204:
+          description: Deleted
+
+  /secretary/team/{teamId}/setLessonRecording:
+    post:
+      tags: [ Secretary ]
+      summary: Set team lesson recording
+      operationId: setTeamLessonRecording
+      parameters:
+        - in: path
+          name: teamId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetLessonRecordingRequest'
+      responses:
+        201:
+          description: SUCCESS
+
   /secretary/defence:
     get:
       tags: [ Secretary ]
@@ -723,20 +747,6 @@ paths:
         200:
           description: SUCCESS
 
-  /secretary/announcement:
-    get:
-      tags: [ Secretary ]
-      summary: Get announcements
-      operationId: getAnnouncements
-      responses:
-        200:
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AnnouncementDto'
 
   /secretary/announcement/{announcementId}:
     get:
@@ -836,6 +846,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/FileUploadResponse'
 
+
+
   /profile:
     get:
       summary: Get profile information
@@ -868,8 +880,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/FileUploadResponse'
 
+  /profile/announcements:
+    get:
+      tags: [ Profile ]
+      summary: Get announcements
+      operationId: getAnnouncements
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnnouncementDto'
+
 components:
   schemas:
+
+
+    SetLessonRecordingRequest:
+      type: object
+      properties:
+        lessonRecordingURL:
+          type: string
 
     StudentWithGradeDto:
       description: student with grade
@@ -1046,6 +1080,8 @@ components:
           type: string
         choices:
           type: integer
+        presentationURL:
+          type: string
       required:
         - name
         - creatorId
@@ -1257,23 +1293,6 @@ components:
           items:
             $ref: '#/components/schemas/UserDto'
 
-    TeamJoinRequestInfoByBlocksDto:
-      type: object
-      properties:
-        request:
-          $ref: '#/components/schemas/RequestDto'
-        team:
-          $ref: '#/components/schemas/TeamShortInfoDto'
-
-    RequestDto:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        accepted:
-          type: boolean
-
     StageInfoByBlocksDto:
       type: object
       properties:
@@ -1292,6 +1311,11 @@ components:
           format: int64
         name:
           type: string
+        presentationURL:
+          type: string
+        lessonRecordingURL:
+          type: string
+
 
     CreateDefenceRequest:
       type: object
