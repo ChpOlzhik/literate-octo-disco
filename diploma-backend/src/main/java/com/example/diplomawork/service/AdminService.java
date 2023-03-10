@@ -58,39 +58,8 @@ public class AdminService {
     private final SubjectMapper subjectMapper;
 
 
-
-    public List<TeamShortInfoDto> getTeams() {
-        List<Team> teams = teamRepository.findAllByConfirmedTrue();
-        return teams.stream().map(team -> TeamShortInfoDto.builder()
-                .id(team.getId())
-                .name(team.getName())
-                .build()).collect(Collectors.toList());
-    }
-
-    public void deleteTeam(Long teamId) {
-        teamRepository.deleteById(teamId);
-    }
-
-
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
-    }
-
-    public TeamInfoByBlocksDto getTeamInfo(Long teamId) {
-        Team team = teamRepository.findById(teamId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + teamId + " not found"));
-        List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(teamId);
-        List<UserDto> members = userTeams.stream().map(user -> userMapper.entity2dto(user.getUser())).collect(Collectors.toList());
-        List<DefenceDto> defences = team.getTeamDefences().stream().map(defence -> DefenceDto.builder()
-                .id(defence.getId())
-                .defenceDate(defence.getDefenceDate())
-                .stage(stageMapper.entity2dto(defence.getStage()))
-                .build()).collect(Collectors.toList());
-        return TeamInfoByBlocksDto.builder()
-                .team(teamMapper.entity2dto(team))
-                .creator(userMapper.entity2dto(team.getCreator()))
-                .defences(defences)
-                .members(members)
-                .build();
     }
 
 

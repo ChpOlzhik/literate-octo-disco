@@ -32,11 +32,17 @@ public class Team {
 
     private Boolean confirmed;
 
+    private String presentationURL;
 
-    public Team(Long id, @NonNull String name, User creator, Boolean confirmed) {
+    private String lessonRecordingURL;
+
+
+    public Team(Long id, @NonNull String name, User creator, Boolean confirmed, String presentationURL, String lessonRecordingURL) {
         this.id = id;
         this.name = name;
         this.creator = creator;
         this.confirmed = confirmed;
+        this.presentationURL = presentationURL;
+        this.lessonRecordingURL = lessonRecordingURL;
     }
 }

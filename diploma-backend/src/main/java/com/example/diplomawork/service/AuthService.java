@@ -54,6 +54,7 @@ public class AuthService {
                 .middleName(request.getMiddleName())
                 .username(request.getUsername())
                 .email(request.getEmail())
+                .birthDate(request.getBirthDate())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(roleRepository.findByName("ROLE_STUDENT"))
                 .build();

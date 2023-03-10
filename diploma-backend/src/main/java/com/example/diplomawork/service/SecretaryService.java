@@ -1,6 +1,7 @@
 package com.example.diplomawork.service;
 
 import com.example.diplomawork.mapper.DefenceMapper;
+import com.example.diplomawork.mapper.StageMapper;
 import com.example.diplomawork.mapper.TeamMapper;
 import com.example.diplomawork.mapper.UserMapper;
 import com.example.diplomawork.model.*;
@@ -9,6 +10,7 @@ import com.example.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ public class SecretaryService {
 
     private final UserTeamRepository userTeamRepository;
 
+    private final TeamRepository teamRepository;
+
     private final UserGradeRepository userGradeRepository;
 
     private final UserCommissionGradeRepository userCommissionGradeRepository;
@@ -39,6 +43,44 @@ public class SecretaryService {
 
     private final DefenceMapper defenceMapper;
 
+    private final StageMapper stageMapper;
+
+
+    public List<TeamShortInfoDto> getTeams() {
+        List<Team> teams = teamRepository.findAllByConfirmedTrue();
+        return teams.stream().map(team -> TeamShortInfoDto.builder()
+                .id(team.getId())
+                .name(team.getName())
+                .build()).collect(Collectors.toList());
+    }
+
+    public void deleteTeam(Long teamId) {
+        teamRepository.deleteById(teamId);
+    }
+
+
+    public TeamInfoByBlocksDto getTeamInfo(Long teamId) {
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + teamId + " not found"));
+        List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(teamId);
+        List<UserDto> members = userTeams.stream().map(user -> userMapper.entity2dto(user.getUser())).collect(Collectors.toList());
+        List<DefenceDto> defences = team.getTeamDefences().stream().map(defence -> DefenceDto.builder()
+                .id(defence.getId())
+                .defenceDate(defence.getDefenceDate())
+                .stage(stageMapper.entity2dto(defence.getStage()))
+                .build()).collect(Collectors.toList());
+        return TeamInfoByBlocksDto.builder()
+                .team(teamMapper.entity2dto(team))
+                .creator(userMapper.entity2dto(team.getCreator()))
+                .defences(defences)
+                .members(members)
+                .build();
+    }
+
+    public void setTeamLessonRecording(String lessonRecordingURL, Long teamId){
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + teamId + " not found"));
+        team.setLessonRecordingURL(lessonRecordingURL);
+        teamRepository.save(team);
+    }
 
     public DefenceInfoByBlocksDto getDefenceInfo(Long defenceId) {
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
