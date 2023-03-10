@@ -4,6 +4,27 @@ info:
   title: Diploma Service
   description: The Diploma Service
 paths:
+
+  /student/uploadAndSetPresentation:
+    post:
+      tags: [ Student ]
+      description: Upload presentation for
+      operationId: uploadAndSetPresentation
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
+
+
   /student/teams:
     get:
       tags: [ Student ]
@@ -17,52 +38,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/TeamInfoWithMembersDto'
 
-  /student/teams/request:
-    get:
-      tags: [ Student ]
-      summary: Receives all requests to join the team
-      operationId: getTeamRequests
-      responses:
-        '200':
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserTeamInfoByBlockDto'
-
-  /student/teams/request/check:
-    get:
-      tags: [ Student ]
-      summary: Gets all team join requests of user
-      operationId: getUserRequests
-      responses:
-        '200':
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TeamJoinRequestInfoByBlocksDto'
-
-  /student/teams/request/{requestId}/accept:
-    post:
-      tags: [ Student ]
-      summary: Accepts request to join to the team
-      operationId: acceptTeamJoinRequest
-      parameters:
-        - in: path
-          name: requestId
-          schema:
-            type: integer
-            format: int64
-          required: true
-      responses:
-        201:
-          description: Success
-
   /student/teams/create:
     post:
       summary: Creates a new team
@@ -74,23 +49,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TeamCreateUpdateRequest'
-      responses:
-        201:
-          description: Success
-
-  /student/teams/{teamId}/request:
-    post:
-      summary: Creates a request to join to the team
-      tags: [ Student ]
-      operationId: createRequestToTeam
-      parameters:
-        - in: path
-          name: teamId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Team ID
       responses:
         201:
           description: Success
@@ -878,6 +836,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/FileUploadResponse'
 
+  /profile:
+    get:
+      summary: Get profile information
+      tags: [ Profile ]
+      operationId: getProfileInfo
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileDto'
+
+  /profile/uploadAndSetProfilePhoto:
+    post:
+      tags: [ Profile ]
+      description: Set profile photo of user
+      operationId: uploadAndSetProfilePhoto
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
 
 components:
   schemas:
@@ -1000,6 +989,11 @@ components:
           type: string
         email:
           type: string
+        birthDate:
+          type: string
+          format: data-time
+        profilePhoto:
+          type: string
 
     RoleDto:
       description: Role info
@@ -1067,6 +1061,9 @@ components:
           type: string
         email:
           type: string
+        birthDate:
+          type: string
+          format: date-time
         username:
           type: string
         password:
@@ -1333,3 +1330,44 @@ components:
       properties:
         fileUrl:
           type: string
+
+    ProfileDto:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        birthDate:
+          type: string
+          format: date-time
+        profilePhoto:
+          type: string
+        group:
+          $ref: '#/components/schemas/GroupDto'
+        subject:
+          $ref: '#/components/schemas/SubjectDto'
+
+    ProfileGetResponse:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        profilePhoto:
+          type: string
+        group:
+          $ref: '#/components/schemas/GroupDto'
+        subject:
+          $ref: '#/components/schemas/SubjectDto'
+
+
