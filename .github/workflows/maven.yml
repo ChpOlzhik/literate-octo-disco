@@ -5,9 +5,8 @@ name: Diploma ci-cd
 
 on:
   push:
-    branches: [ "master" ]
-  pull-request:
-    branches: [ "master" ]
+    branches:
+      - master
 
 jobs:
   build:
