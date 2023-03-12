@@ -16,12 +16,18 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-
+  
   backend:
     image: ozhek/almatyustazy:latest
+    volumes:
+      - /home/ubuntu/almaty_ustazy_backend:/home/app/almaty_ustazy_backend
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /home/app/almaty_ustazy_backend/storage_credientials.json
     ports:
-      - "8082:8080"
+      - "8080:8080"
     networks:
+      - postgres
+    depends_on:
       - postgres
 
 
