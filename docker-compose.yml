@@ -22,7 +22,11 @@ services:
     volumes:
       - /home/ubuntu/almaty_ustazy_backend:/home/app/almaty_ustazy_backend
     environment:
-      GOOGLE_APPLICATION_CREDENTIALS: /home/app/almaty_ustazy_backend/storage_credientials.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/home/app/almaty_ustazy_backend/storage_credientials.json
+      - DB_URL
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
     ports:
       - "8080:8080"
     networks:
