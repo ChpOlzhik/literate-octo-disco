@@ -19,8 +19,6 @@ services:
 
   backend:
     image: ozhek/almatyustazy:latest
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS
     ports:
       - "8082:8080"
     networks:
