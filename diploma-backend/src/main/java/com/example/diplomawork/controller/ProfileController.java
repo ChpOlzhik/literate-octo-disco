@@ -10,7 +10,9 @@ import com.example.diplomawork.service.StorageService;
 import com.example.models.AnnouncementDto;
 import com.example.models.FileUploadResponse;
 import com.example.models.ProfileDto;
+import com.example.models.ProfileUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +42,12 @@ public class ProfileController implements ProfileApi {
     @Override
     public ResponseEntity<List<AnnouncementDto>> getAnnouncements(){
         return ResponseEntity.ok(announcementService.getAnnouncements());
+    }
+
+    @Override
+    public ResponseEntity<Void> updateProfileInfo(ProfileUpdateRequest request){
+        profileService.updateProfileInfo(request);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 

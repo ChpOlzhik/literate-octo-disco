@@ -861,6 +861,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProfileDto'
 
+  /profile/updateProfileInfo:
+    put:
+      summary: Update profile info
+      tags: [ Profile ]
+      operationId: updateProfileInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateRequest'
+      responses:
+        201:
+          description: Success
+
+
   /profile/uploadAndSetProfilePhoto:
     post:
       tags: [ Profile ]
@@ -1393,5 +1409,24 @@ components:
           $ref: '#/components/schemas/GroupDto'
         subject:
           $ref: '#/components/schemas/SubjectDto'
+
+    ProfileUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        birthDate:
+          type: string
+          format: date-time
+        group:
+          type: integer
+          format: int64
+        subject:
+          type: integer
+          format: int64
 
 
