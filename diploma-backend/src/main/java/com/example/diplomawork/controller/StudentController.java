@@ -1,6 +1,7 @@
 package com.example.diplomawork.controller;
 
 import com.example.api.StudentApi;
+import com.example.diplomawork.model.UserGrade;
 import com.example.diplomawork.service.StorageService;
 import com.example.diplomawork.service.StudentService;
 import com.example.models.*;
@@ -34,6 +35,12 @@ public class StudentController implements StudentApi {
     @Override
     public ResponseEntity<FileUploadResponse> uploadAndSetPresentation(MultipartFile file){
         return ResponseEntity.ok(storageService.uploadParticipantPresentation(file));
+    }
+
+    @Override
+    public ResponseEntity<List<UserGradeDto>> getGrades(){
+        List<UserGradeDto> grades = studentService.getGrades();
+        return ResponseEntity.ok(grades);
     }
 
 }

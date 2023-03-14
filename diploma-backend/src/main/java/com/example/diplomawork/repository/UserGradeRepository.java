@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserGradeRepository extends JpaRepository<UserGrade, Long> {
+    UserGrade findByDefenceIdAndStudentId(Long defenceId, Long studentId);
 }

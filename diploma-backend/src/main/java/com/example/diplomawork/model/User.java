@@ -53,8 +53,8 @@ public class User {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToOne(mappedBy = "student")
-    private UserGrade grade;
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    private List<UserGrade> grades;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<UserTeam> userTeams;

@@ -58,7 +58,7 @@ public class CommissionService {
         User student = userRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("User with id: " + studentId + " not found"));
         User commission = authService.getCurrentUser();
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
-        UserCommissionGrade userCommissionGrade = userCommissionGradeRepository.findByCommissionIdAndStudentId(commission.getId(), student.getId()).orElse(null);
+        UserCommissionGrade userCommissionGrade = userCommissionGradeRepository.findByCommissionIdAndStudentIdAndDefenceId(commission.getId(), student.getId(), defence.getId());
         if (userCommissionGrade == null) {
             userCommissionGrade = UserCommissionGrade.builder()
                     .id(null)

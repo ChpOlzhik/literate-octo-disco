@@ -12,6 +12,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 @SpringBootApplication
@@ -39,7 +40,7 @@ public class DiplomaWorkApplication {
 
     @Bean
     @Transactional
-    CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, GroupRepository groupRepository, TeamRepository teamRepository, UserTeamRepository userTeamRepository, StageRepository stageRepository, AnnouncementRepository announcementRepository, SubjectRepository subjectRepository) {
+    CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, GroupRepository groupRepository, TeamRepository teamRepository, UserTeamRepository userTeamRepository, StageRepository stageRepository, AnnouncementRepository announcementRepository) {
         return args -> {
 
             roleRepository.save(new Role(null, "ROLE_ADMIN"));
@@ -153,6 +154,33 @@ public class DiplomaWorkApplication {
                     .title("Hello")
                     .creator(userRepository.getById(9L))
                     .build());
+
+            // ------ User Team ------
+            userRepository.save(User.builder()
+                    .id(null)
+                    .firstName("Olzhas")
+                    .lastName("Abdykalykov")
+                    .middleName("Akumzhanuly")
+                    .username("ozhek")
+                    .role(roleRepository.findByName("ROLE_STUDENT"))
+                    .password(new BCryptPasswordEncoder().encode("verySecret3$"))
+                    .build());
+
+            teamRepository.save(Team.builder()
+                    .id(null)
+                    .confirmed(true)
+                    .creator(userRepository.findByUsername("ozhek").get())
+                    .name("ozhek")
+                    .build());
+
+            userTeamRepository.save(UserTeam.builder()
+                    .id(null)
+                    .user(userRepository.findByUsername("ozhek").get())
+                    .team(teamRepository.findTeamByName("ozhek"))
+                    .build());
+
+            // ------ User Team ------
+
         };
     }
 }

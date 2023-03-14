@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,18 @@ public class StudentService {
                 .team(teamMapper.entity2dto(team))
                 .members(userTeams.stream().map(userTeam -> userMapper.entity2dto(userTeam.getUser())).collect(Collectors.toList()))
                 .build();
+    }
+
+    public List<UserGradeDto> getGrades(){
+        User currentUser = authService.getCurrentUser();
+        List<UserGradeDto> grades = new ArrayList<>();
+        currentUser.getGrades().forEach(userGrade -> {
+            grades.add(UserGradeDto.builder()
+                    .grade(userGrade.getFinalGrade())
+                    .stage(userGrade.getDefence().getStage().getName())
+                    .build());
+        });
+        return grades;
     }
 
 
