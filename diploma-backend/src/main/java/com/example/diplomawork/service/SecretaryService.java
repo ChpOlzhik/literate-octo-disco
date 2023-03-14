@@ -43,6 +43,7 @@ public class SecretaryService {
 
     private final DefenceMapper defenceMapper;
 
+    private final StageRepository stageRepository;
     private final StageMapper stageMapper;
 
 
@@ -117,22 +118,25 @@ public class SecretaryService {
         List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(defence.getTeam().getId());
         List<StudentWithGradeDto> students = new ArrayList<>();
         userTeams.forEach(userTeam -> {
-            List<UserCommissionGrade> grades = userCommissionGradeRepository.findAllByDefenceIdAndStudentId(defenceId, userTeam.getUser().getId());
-            students.add(StudentWithGradeDto.builder()
-                    .id(userTeam.getUser().getId())
-                    .fullName(userTeam.getUser().getFirstName() + " " + userTeam.getUser().getLastName())
-                    .grade(userTeam.getUser().getGrade() != null ? userTeam.getUser().getGrade().getFinalGrade() : (!grades.isEmpty() ? grades.stream().mapToInt(UserCommissionGrade::getGrade).sum() / grades.size() : null))
-                    .build());
+            userTeam.getUser().getGrades().forEach(finalGrade -> {
+                students.add(StudentWithGradeDto.builder()
+                        .id(userTeam.getUser().getId())
+                        .fullName(userTeam.getUser().getFirstName() + " " + userTeam.getUser().getLastName())
+                        .grade(finalGrade.getFinalGrade() == null? finalGrade.getFirstGrade() : finalGrade.getFinalGrade())
+                        .build());
+            });
         });
         return students;
     }
 
     public void setFinalGrade(Long defenceId, Long userId, GradeDto gradeDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id: " + userId + " not found"));
+        Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
         List<UserCommissionGrade> grades = userCommissionGradeRepository.findAllByDefenceIdAndStudentId(defenceId, userId);
-        if (user.getGrade() != null) {
-            user.getGrade().setFirstGrade(grades.stream().mapToInt(UserCommissionGrade::getGrade).sum() / grades.size());
-            user.getGrade().setFinalGrade(gradeDto.getGrade());
+        UserGrade finalGrade = userGradeRepository.findByDefenceIdAndStudentId(defenceId, userId);
+        if (finalGrade != null) {
+            finalGrade.setFirstGrade(grades.stream().mapToInt(UserCommissionGrade::getGrade).sum() / grades.size());
+            finalGrade.setFinalGrade(gradeDto.getGrade());
             userRepository.save(user);
         } else {
             UserGrade userGrade = UserGrade.builder()
@@ -140,6 +144,7 @@ public class SecretaryService {
                     .firstGrade(!grades.isEmpty() ? grades.stream().mapToInt(UserCommissionGrade::getGrade).sum() / grades.size() : null)
                     .finalGrade(gradeDto.getGrade())
                     .student(user)
+                    .defence(defence)
                     .build();
             userGradeRepository.save(userGrade);
         }
