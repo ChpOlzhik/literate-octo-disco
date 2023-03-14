@@ -24,7 +24,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/FileUploadResponse'
 
-
   /student/teams:
     get:
       tags: [ Student ]
@@ -67,6 +66,21 @@ paths:
       responses:
         204:
           description: Success
+
+  /student/teams/getGrades:
+    get:
+      summary: Get grades by stages
+      tags: [ Student ]
+      operationId: getGrades
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserGradeDto'
 
   /auth/signup:
     post:
@@ -929,6 +943,8 @@ components:
           format: int64
         fullName:
           type: string
+        stageName:
+          type: string
         grade:
           type: integer
 
@@ -937,6 +953,14 @@ components:
       properties:
         grade:
           type: integer
+
+    UserGradeDto:
+      description: User grade
+      properties:
+        grade:
+          type: integer
+        stage:
+          type: string
 
     CreateAnnouncementResponse:
       type: object
