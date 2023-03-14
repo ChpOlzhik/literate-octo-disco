@@ -11,8 +11,6 @@ import com.example.models.ProfileUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.jws.soap.SOAPBinding;
 import javax.persistence.EntityNotFoundException;
 
 @Service
