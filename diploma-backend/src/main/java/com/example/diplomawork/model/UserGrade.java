@@ -16,11 +16,15 @@ public class UserGrade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User student;
 
     private Integer firstGrade;
 
     private Integer finalGrade;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "defence_id", nullable = false)
+    private Defence defence;
 }
