@@ -1,7 +1,6 @@
 package com.example.diplomawork.repository;
 
 import com.example.diplomawork.model.Team;
-import com.example.diplomawork.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

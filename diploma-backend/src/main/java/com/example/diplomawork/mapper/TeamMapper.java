@@ -5,7 +5,6 @@ import com.example.models.TeamCreateUpdateRequest;
 import com.example.models.TeamShortInfoDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface TeamMapper {

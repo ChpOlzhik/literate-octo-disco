@@ -1,6 +1,5 @@
 package com.example.diplomawork.service;
 
-import com.example.diplomawork.model.Announcement;
 import com.example.diplomawork.model.*;
 import com.example.diplomawork.repository.AnnouncementRepository;
 import com.example.diplomawork.repository.TeamRepository;
@@ -18,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class StorageService {
 
+//    GoogleCredentials credentials = GoogleCredentials.fromStream(Files.newInputStream(Paths.get("")));
     private final Storage storage;
     private final String bucketName;
 
@@ -36,9 +36,9 @@ public class StorageService {
         this.userRepository = userRepository;
         this.userTeamRepository = userTeamRepository;
         this.teamRepository = teamRepository;
+        this.announcementRepository = announcementRepository;
         this.storage = StorageOptions.getDefaultInstance().getService();
         this.bucketName = "almatyustazy-profile-bucket";
-        this.announcementRepository = announcementRepository;
     }
 
     public FileUploadResponse uploadAndSetAnnouncementFile(MultipartFile file, Long announcementId){
@@ -77,6 +77,7 @@ public class StorageService {
             Blob blob = storage.create(blobInfo, file.getBytes());
             return blob.getMediaLink();
         } catch (Exception e){
+            System.out.println("IMPORTANT: " + e);
             return "";
         }
     }

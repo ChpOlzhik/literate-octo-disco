@@ -2,15 +2,10 @@ package com.example.diplomawork.controller;
 
 
 import com.example.api.ProfileApi;
-import com.example.diplomawork.model.User;
 import com.example.diplomawork.service.AnnouncementService;
-import com.example.diplomawork.service.AuthService;
 import com.example.diplomawork.service.ProfileService;
 import com.example.diplomawork.service.StorageService;
-import com.example.models.AnnouncementDto;
-import com.example.models.FileUploadResponse;
-import com.example.models.ProfileDto;
-import com.example.models.ProfileUpdateRequest;
+import com.example.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +42,17 @@ public class ProfileController implements ProfileApi {
     @Override
     public ResponseEntity<Void> updateProfileInfo(ProfileUpdateRequest request){
         profileService.updateProfileInfo(request);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<GroupDto>> getGroups(){
+        return ResponseEntity.ok(profileService.getGroups());
+    }
+
+    @Override
+    public ResponseEntity<List<SubjectDto>> getSubjects(){
+        return ResponseEntity.ok(profileService.getSubjects());
     }
 
 

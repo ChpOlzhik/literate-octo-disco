@@ -925,6 +925,36 @@ paths:
                 items:
                   $ref: '#/components/schemas/AnnouncementDto'
 
+  /profile/groups:
+    get:
+      tags: [ Profile ]
+      summary: Get list of all schools in Almaty
+      operationId: getGroups
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupDto'
+
+  /profile/subjects:
+    get:
+      tags: [ Profile ]
+      summary: Get list of subjects
+      operationId: getSubjects
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubjectDto'
+
 components:
   schemas:
 

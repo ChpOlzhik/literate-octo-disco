@@ -3,7 +3,6 @@ package com.example.diplomawork.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.sound.sampled.ReverbType;
 import java.util.List;
 
 @Getter
