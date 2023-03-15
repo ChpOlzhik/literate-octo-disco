@@ -11,7 +11,6 @@ import com.example.diplomawork.repository.UserRepository;
 import com.example.diplomawork.repository.UserTeamRepository;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

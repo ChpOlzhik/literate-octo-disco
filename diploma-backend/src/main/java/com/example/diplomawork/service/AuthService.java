@@ -2,7 +2,6 @@ package com.example.diplomawork.service;
 
 import com.example.diplomawork.exception.SpringAppException;
 import com.example.diplomawork.mapper.RoleMapper;
-import com.example.diplomawork.model.Role;
 import com.example.diplomawork.model.User;
 import com.example.diplomawork.model.VerificationToken;
 import com.example.diplomawork.repository.RoleRepository;
@@ -27,9 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service

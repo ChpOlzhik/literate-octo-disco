@@ -5,7 +5,6 @@ import com.example.models.RegisterRequest;
 import com.example.models.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

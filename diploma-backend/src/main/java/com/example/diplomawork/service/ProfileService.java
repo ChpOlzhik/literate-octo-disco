@@ -6,14 +6,13 @@ import com.example.diplomawork.repository.GroupRepository;
 import com.example.diplomawork.repository.SubjectRepository;
 import com.example.diplomawork.repository.UserRepository;
 import com.example.diplomawork.model.*;
-import com.example.models.ProfileDto;
-import com.example.models.ProfileUpdateRequest;
+import com.example.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.jws.soap.SOAPBinding;
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,5 +56,27 @@ public class ProfileService {
         cu.setGroup(request.getGroup() == null? cu.getGroup() : groupRepository.findById(request.getGroup()).orElseThrow(() -> new EntityNotFoundException("Group with id: "+ request.getGroup() + " not found;")));
         cu.setSubject(request.getSubject() == null? cu.getSubject() : subjectRepository.findById(request.getSubject()).orElseThrow(() -> new EntityNotFoundException("Subject with id: "+ request.getSubject() + " not found;")));
         userRepository.save(cu);
+    }
+
+    public List<GroupDto> getGroups(){
+        List<GroupDto> groups = new ArrayList<>();
+        groupRepository.findAll().forEach(group -> {
+            groups.add(GroupDto.builder()
+                            .id(group.getId())
+                            .name(group.getName())
+                            .build());
+        });
+        return groups;
+    }
+
+    public List<SubjectDto> getSubjects(){
+        List<SubjectDto> subjects = new ArrayList<>();
+        subjectRepository.findAll().forEach(subject -> {
+            subjects.add(SubjectDto.builder()
+                    .id(subject.getId())
+                    .name(subject.getName())
+                    .build());
+        });
+        return subjects;
     }
 }
