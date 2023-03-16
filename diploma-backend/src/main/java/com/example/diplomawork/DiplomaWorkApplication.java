@@ -176,6 +176,7 @@ public class DiplomaWorkApplication {
                     .id(null)
                     .user(userRepository.findByUsername("ozhek").get())
                     .team(teamRepository.findTeamByName("ozhek"))
+                    .accepted(true)
                     .build());
 
             // ------ User Team ------
