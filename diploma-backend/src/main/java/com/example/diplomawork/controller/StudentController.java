@@ -38,7 +38,7 @@ public class StudentController implements StudentApi {
     }
 
     @Override
-    public ResponseEntity<TeamInfoWithMembersDto> getTeam() {
+    public ResponseEntity<TeamInfoWithMemberDto> getTeam() {
         logger.info("Get team info");
         return ResponseEntity.ok(studentService.getTeam());
     }
@@ -54,6 +54,12 @@ public class StudentController implements StudentApi {
         logger.info("Get grades for stages");
         List<UserGradeDto> grades = studentService.getGrades();
         return ResponseEntity.ok(grades);
+    }
+
+    @Override
+    public ResponseEntity<FileUploadResponse> uploadAndSetApplicationForm(MultipartFile file){
+        logger.info("Application form upload request");
+        return ResponseEntity.ok(storageService.uploadParticipantApplicationForm(file));
     }
 
 }

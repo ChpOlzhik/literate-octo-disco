@@ -5,7 +5,6 @@ import com.example.diplomawork.model.*;
 import com.example.diplomawork.repository.AnnouncementRepository;
 import com.example.diplomawork.repository.TeamRepository;
 import com.example.diplomawork.repository.UserRepository;
-import com.example.diplomawork.repository.UserTeamRepository;
 import com.example.models.FileUploadResponse;
 import com.google.cloud.storage.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.persistence.EntityNotFoundException;
+
 import java.util.NoSuchElementException;
 
 
@@ -30,15 +29,13 @@ public class StorageService {
     private final UserRepository userRepository;
 
     private final TeamRepository teamRepository;
-    private final UserTeamRepository userTeamRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @Autowired
-    public StorageService(AuthService authService, AnnouncementRepository announcementRepository, UserRepository userRepository, UserTeamRepository userTeamRepository, com.example.diplomawork.repository.TeamRepository teamRepository) {
+    public StorageService(AuthService authService, AnnouncementRepository announcementRepository, UserRepository userRepository,TeamRepository teamRepository) {
         this.authService = authService;
         this.userRepository = userRepository;
-        this.userTeamRepository = userTeamRepository;
         this.teamRepository = teamRepository;
         this.announcementRepository = announcementRepository;
         this.storage = StorageOptions.getDefaultInstance().getService();
@@ -80,8 +77,7 @@ public class StorageService {
     public FileUploadResponse uploadParticipantPresentation(MultipartFile file){
         try{
             User currentUser = authService.getCurrentUser();
-            UserTeam userTeamSet = userTeamRepository.findByUserIdAndAcceptedTrue(currentUser.getId()).orElseThrow(() -> new EntityNotFoundException("Team with member id: " + currentUser.getId().toString() + " not found"));
-            Team team = userTeamSet.getTeam();
+            Team team = currentUser.getTeam();
             String filePath = "participant_presentations/" + team.getName();
             logger.debug("Presentation upload request | Team name: " + team.getName());
             String presentationURL = uploadFile(file, this.bucketName, filePath);
@@ -91,6 +87,23 @@ public class StorageService {
             return FileUploadResponse.builder().fileUrl(presentationURL).build();
         } catch (Exception e){
             logger.error("Upload presentation: " + e);
+        }
+        return FileUploadResponse.builder().fileUrl("").build();
+    }
+
+    public FileUploadResponse uploadParticipantApplicationForm(MultipartFile file){
+        try{
+            User currentUser = authService.getCurrentUser();
+            Team team = currentUser.getTeam();
+            String filePath = "application_forms/" + team.getName();
+            logger.debug("Application form upload request | Team name: " + team.getName());
+            String applicationFormURL = uploadFile(file, this.bucketName, filePath);
+            logger.debug("Team name: " + team.getName() + "application form file url is set: " + !applicationFormURL.equals(""));
+            team.setApplicationFormURL(applicationFormURL);
+            teamRepository.saveAndFlush(team);
+            return FileUploadResponse.builder().fileUrl(applicationFormURL).build();
+        } catch (Exception e){
+            logger.error("Upload application form: " + e);
         }
         return FileUploadResponse.builder().fileUrl("").build();
     }

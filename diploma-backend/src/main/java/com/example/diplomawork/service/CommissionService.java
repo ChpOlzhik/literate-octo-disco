@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class CommissionService {
 
-    private final UserTeamRepository userTeamRepository;
-
     private final DefenceRepository defenceRepository;
 
     private final UserRepository userRepository;
@@ -41,10 +39,9 @@ public class CommissionService {
     public DefenceInfoByBlocksDto getCommissionDefence(Long defenceId) {
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
         Team team = defence.getTeam();
-        List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(team.getId());
-        TeamInfoWithMembersDto teamInfo = TeamInfoWithMembersDto.builder()
+        TeamInfoWithMemberDto teamInfo = TeamInfoWithMemberDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .members(userTeams.stream().map(userTeam -> userMapper.entity2dto(userTeam.getUser())).collect(Collectors.toList()))
+                .member(userMapper.entity2dto(team.getCreator()))
                 .build();
 
         return DefenceInfoByBlocksDto.builder()
@@ -93,16 +90,16 @@ public class CommissionService {
         return defenceCommissions.stream().map(defence -> userMapper.entity2dto(defence.getCommission())).collect(Collectors.toList());
     }
 
-    public List<StudentWithGradeDto> getStudentsWithCommissionGrades(Long defenceId) {
+    // TODO
+    public StudentWithGradeDto getStudentsWithCommissionGrades(Long defenceId) {
         User commission = authService.getCurrentUser();
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
-        Team team = defence.getTeam();
-        List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(team.getId());
-        List<StudentWithGradeDto> students = new ArrayList<>();
-        userTeams.forEach(userTeam -> {
-            UserCommissionGrade grade = userCommissionGradeRepository.findByCommissionIdAndStudentIdAndDefenceId(commission.getId(), userTeam.getUser().getId(), defenceId);
-            students.add(StudentWithGradeDto.builder().id(userTeam.getUser().getId()).fullName(userTeam.getUser().getFirstName() + " " + userTeam.getUser().getLastName()).grade(grade != null ? grade.getGrade() : null).build());
-        });
-        return students;
+        User student = defence.getTeam().getCreator();
+        UserCommissionGrade grade = userCommissionGradeRepository.findByCommissionIdAndStudentIdAndDefenceId(commission.getId(), student.getId(), defenceId);
+        return StudentWithGradeDto.builder()
+                .fullName(student.getLastName() + student.getFirstName())
+                .stageName(defence.getStage().getName())
+                .grade(grade.getGrade())
+                .build();
     }
 }

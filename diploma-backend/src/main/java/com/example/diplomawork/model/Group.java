@@ -17,14 +17,15 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String name;
+    private String nameKaz;
+    private String nameRus;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<User> groupUsers;
 
-    public Group(Long id, String name) {
+    public Group(Long id, String nameKaz, String nameRus) {
         this.id = id;
-        this.name = name;
+        this.nameKaz = nameKaz;
+        this.nameRus = nameRus;
     }
 }

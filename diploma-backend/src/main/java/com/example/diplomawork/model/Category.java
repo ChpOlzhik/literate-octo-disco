@@ -1,7 +1,6 @@
 package com.example.diplomawork.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -9,9 +8,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "subjects")
+@Entity(name = "categories")
 @Builder
-public class Subject {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,10 +18,10 @@ public class Subject {
     private String nameKaz;
     private String nameRus;
 
-    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
-    private List<User> subjectUsers;
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<User> categoryUsers;
 
-    public Subject(Long id, String nameKaz, String nameRus) {
+    public Category(Long id, String nameKaz, String nameRus) {
         this.id = id;
         this.nameKaz = nameKaz;
         this.nameRus = nameRus;

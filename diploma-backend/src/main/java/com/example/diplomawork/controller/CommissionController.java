@@ -18,7 +18,7 @@ public class CommissionController implements CommissionApi {
 
 
     @Override
-    public ResponseEntity<List<StudentWithGradeDto>> getStudentsWithCommissionGrades(Long defenceId) {
+    public ResponseEntity<StudentWithGradeDto> getStudentsWithCommissionGrades(Long defenceId) {
         return ResponseEntity.ok(commissionService.getStudentsWithCommissionGrades(defenceId));
     }
 

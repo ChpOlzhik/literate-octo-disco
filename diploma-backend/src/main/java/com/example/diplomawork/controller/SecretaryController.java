@@ -38,8 +38,8 @@ public class SecretaryController implements SecretaryApi {
     }
 
     @Override
-    public ResponseEntity<List<StudentWithGradeDto>> getStudentsWithGrades(Long defenceId) {
-        return ResponseEntity.ok(secretaryService.getStudentsWithGrades(defenceId));
+    public ResponseEntity<StudentWithGradesDto> getStudentWithGrades(Long defenceId) {
+        return ResponseEntity.ok(secretaryService.getStudentWithGrades(defenceId));
     }
 
     @Override
@@ -77,8 +77,8 @@ public class SecretaryController implements SecretaryApi {
     }
 
     @Override
-    public ResponseEntity<List<TeamShortInfoDto>> getTeams() {
-        return ResponseEntity.ok(secretaryService.getTeams());
+    public ResponseEntity<List<TeamShortInfoDto>> getTeams(Boolean isConfirmed) {
+        return ResponseEntity.ok(secretaryService.getTeams(isConfirmed));
     }
 
     @Override

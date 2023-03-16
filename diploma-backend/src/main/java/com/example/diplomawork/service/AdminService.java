@@ -50,8 +50,6 @@ public class AdminService {
 
     private final StageRepository stageRepository;
 
-    private final UserTeamRepository userTeamRepository;
-
     private final SubjectMapper subjectMapper;
 
 
@@ -64,8 +62,6 @@ public class AdminService {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id: " + userId + " not found"));
         return UserInfoByBlocksDto.builder()
                 .user(userMapper.entity2dto(user))
-                .group(groupMapper.entity2dto(user.getGroup()))
-                .subject(subjectMapper.entity2dto(user.getSubject()))
                 .role(roleMapper.entity2dto(user.getRole()))
                 .build();
     }
@@ -73,7 +69,8 @@ public class AdminService {
     public void createUpdateGroup(GroupDto groupDto) {
         Group group = Group.builder()
                 .id(groupDto.getId() != null ? groupDto.getId() : null)
-                .name(groupDto.getName())
+                .nameKaz(groupDto.getNameKaz())
+                .nameRus(groupDto.getNameRus())
                 .build();
         groupRepository.save(group);
     }
@@ -149,8 +146,6 @@ public class AdminService {
     private List<UserInfoByBlocksDto> getUsers() {
         return userRepository.findAll().stream().map(user -> UserInfoByBlocksDto.builder()
                 .user(userMapper.entity2dto(user))
-                .group(groupMapper.entity2dto(user.getGroup()))
-                .subject(subjectMapper.entity2dto(user.getSubject()))
                 .role(roleMapper.entity2dto(user.getRole()))
                 .build()).collect(Collectors.toList());
     }
@@ -186,7 +181,8 @@ public class AdminService {
     public void createUpdateSubject(SubjectDto subjectDto) {
         Subject subject = Subject.builder()
                 .id(subjectDto.getId() != null ? subjectDto.getId() : null)
-                .name(subjectDto.getName())
+                .nameKaz(subjectDto.getNameKaz())
+                .nameRus(subjectDto.getNameRus())
                 .build();
         subjectRepository.save(subject);
     }

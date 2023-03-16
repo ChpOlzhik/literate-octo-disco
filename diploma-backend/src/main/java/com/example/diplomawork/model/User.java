@@ -55,14 +55,23 @@ public class User {
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private List<UserGrade> grades;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<UserTeam> userTeams;
+    @OneToOne(mappedBy = "creator", fetch = FetchType.LAZY)
+    private Team team;
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     List<UserCommissionGrade> commissionsGrades;
 
     @OneToMany(mappedBy = "commission", fetch = FetchType.LAZY)
     List<UserCommissionGrade> commissionGrades;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    private Boolean isKazakhProficient;
+    private Boolean englishProficiency;
+    private int pedagogicalExperience;
+    private int pedagogicalExperienceCurrent;
 
 }
 

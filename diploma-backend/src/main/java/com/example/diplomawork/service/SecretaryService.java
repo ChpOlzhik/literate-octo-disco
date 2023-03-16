@@ -1,17 +1,16 @@
 package com.example.diplomawork.service;
 
-import com.example.diplomawork.mapper.DefenceMapper;
-import com.example.diplomawork.mapper.StageMapper;
-import com.example.diplomawork.mapper.TeamMapper;
-import com.example.diplomawork.mapper.UserMapper;
+import com.example.diplomawork.mapper.*;
 import com.example.diplomawork.model.*;
 import com.example.diplomawork.repository.*;
 import com.example.models.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,8 +23,6 @@ public class SecretaryService {
     private final AuthService authService;
 
     private final DefenceRepository defenceRepository;
-
-    private final UserTeamRepository userTeamRepository;
 
     private final TeamRepository teamRepository;
 
@@ -45,9 +42,12 @@ public class SecretaryService {
     private final StageRepository stageRepository;
     private final StageMapper stageMapper;
 
+    private final GradeMapper gradeMapper;
 
-    public List<TeamShortInfoDto> getTeams() {
-        List<Team> teams = teamRepository.findAllByConfirmedTrue();
+
+    public List<TeamShortInfoDto> getTeams(Boolean isConfirmed) {
+
+        List<Team> teams = isConfirmed == null? teamRepository.findAll(): isConfirmed? teamRepository.findAllByConfirmedTrue():teamRepository.findAllByConfirmedFalse();
         return teams.stream().map(team -> TeamShortInfoDto.builder()
                 .id(team.getId())
                 .name(team.getName())
@@ -61,18 +61,17 @@ public class SecretaryService {
 
     public TeamInfoByBlocksDto getTeamInfo(Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + teamId + " not found"));
-        List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(teamId);
-        List<UserDto> members = userTeams.stream().map(user -> userMapper.entity2dto(user.getUser())).collect(Collectors.toList());
+
         List<DefenceDto> defences = team.getTeamDefences().stream().map(defence -> DefenceDto.builder()
                 .id(defence.getId())
                 .defenceDate(defence.getDefenceDate())
                 .stage(stageMapper.entity2dto(defence.getStage()))
                 .build()).collect(Collectors.toList());
+
         return TeamInfoByBlocksDto.builder()
                 .team(teamMapper.entity2dto(team))
                 .creator(userMapper.entity2dto(team.getCreator()))
                 .defences(defences)
-                .members(members)
                 .build();
     }
 
@@ -85,10 +84,9 @@ public class SecretaryService {
     public DefenceInfoByBlocksDto getDefenceInfo(Long defenceId) {
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
         Team team = defence.getTeam();
-        List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(team.getId());
-        TeamInfoWithMembersDto teamInfo = TeamInfoWithMembersDto.builder()
+        TeamInfoWithMemberDto teamInfo = TeamInfoWithMemberDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .members(userTeams.stream().map(userTeam -> userMapper.entity2dto(userTeam.getUser())).collect(Collectors.toList()))
+                .member(userMapper.entity2dto(team.getCreator()))
                 .build();
 
         return DefenceInfoByBlocksDto.builder()
@@ -112,20 +110,17 @@ public class SecretaryService {
         return dtos;
     }
 
-    public List<StudentWithGradeDto> getStudentsWithGrades(Long defenceId) {
+    public StudentWithGradesDto getStudentWithGrades(Long defenceId) {
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
-        List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(defence.getTeam().getId());
-        List<StudentWithGradeDto> students = new ArrayList<>();
-        userTeams.forEach(userTeam -> {
-            userTeam.getUser().getGrades().forEach(finalGrade -> {
-                students.add(StudentWithGradeDto.builder()
-                        .id(userTeam.getUser().getId())
-                        .fullName(userTeam.getUser().getFirstName() + " " + userTeam.getUser().getLastName())
-                        .grade(finalGrade.getFinalGrade() == null? finalGrade.getFirstGrade() : finalGrade.getFinalGrade())
-                        .build());
-            });
-        });
-        return students;
+        User student = defence.getTeam().getCreator();
+        List<GradeDto> grades = defence.getDefenceGrades().stream().map(gradeMapper::entity2dto).collect(Collectors.toList());
+
+        return StudentWithGradesDto.builder()
+                .id(student.getId())
+                .fullName(student.getFirstName() + " " + student.getLastName())
+                .grades(grades)
+                .stageName(defence.getStage().getName())
+                .build();
     }
 
     public void setFinalGrade(Long defenceId, Long userId, GradeDto gradeDto) {
