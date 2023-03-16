@@ -11,6 +11,8 @@ import com.example.diplomawork.repository.UserRepository;
 import com.example.diplomawork.repository.UserTeamRepository;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +38,7 @@ public class StudentService {
 
     private final UserMapper userMapper;
 
-    private final GroupMapper groupMapper;
-
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public void createUpdateTeam(TeamCreateUpdateRequest request) {
         User currentUser = authService.getCurrentUser();
@@ -48,12 +49,14 @@ public class StudentService {
                 .presentationURL(request.getPresentationURL())
                 .confirmed(false)
                 .build();
+
         teamRepository.saveAndFlush(team);
         userTeamRepository.save(UserTeam.builder()
                 .team(team)
                 .user(currentUser)
                 .accepted(true)
                 .build());
+        logger.debug("Created team " + team.getName());
     }
 
 
@@ -62,6 +65,7 @@ public class StudentService {
         UserTeam userTeamSet = userTeamRepository.findByUserIdAndAcceptedTrue(currentUser.getId()).orElseThrow(() -> new EntityNotFoundException("Team with member id: " + currentUser.getId() + " not found"));
         Team team = userTeamSet.getTeam();
         List<UserTeam> userTeams = userTeamRepository.findAllByTeamIdAndAcceptedTrue(team.getId());
+        logger.debug("Team Info for team: " + team.getName());
         return TeamInfoWithMembersDto.builder()
                 .team(teamMapper.entity2dto(team))
                 .members(userTeams.stream().map(userTeam -> userMapper.entity2dto(userTeam.getUser())).collect(Collectors.toList()))
@@ -77,6 +81,7 @@ public class StudentService {
                     .stage(userGrade.getDefence().getStage().getName())
                     .build());
         });
+        logger.debug(" Get grades for user: " + currentUser.getUsername());
         return grades;
     }
 
