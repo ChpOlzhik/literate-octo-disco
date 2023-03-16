@@ -5,7 +5,7 @@ info:
   description: The Diploma Service
 paths:
 
-  /student/teams/uploadAndSetPresentation:
+  /student/team/uploadAndSetPresentation:
     post:
       tags: [ Student ]
       description: Upload presentation for
@@ -24,7 +24,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/FileUploadResponse'
 
-  /student/teams:
+  /student/team/uploadAndSetApplicationForm:
+    post:
+      tags: [ Student ]
+      description: Upload application form
+      operationId: uploadAndSetApplicationForm
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
+
+  /student/team:
     get:
       tags: [ Student ]
       description: Get user team
@@ -35,9 +54,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TeamInfoWithMembersDto'
+                $ref: '#/components/schemas/TeamInfoWithMemberDto'
 
-  /student/teams/create:
+  /student/team/create:
     post:
       summary: Creates a new team
       tags: [ Student ]
@@ -52,7 +71,7 @@ paths:
         201:
           description: Success
 
-  /student/teams/update:
+  /student/team/update:
     put:
       summary: Updates a team
       tags: [ Student ]
@@ -540,9 +559,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StudentWithGradeDto'
+                $ref: '#/components/schemas/StudentWithGradeDto'
 
   /commission/{defenceId}/set-grade/{studentId}:
     post:
@@ -575,11 +592,18 @@ paths:
           description: SUCCESS
 
 
-  /secretary/team:
+  /secretary/teams:
     get:
-      summary: Gets all teams
+      summary: Gets teams
       tags: [ Secretary ]
       operationId: getTeams
+      parameters:
+        - in: query
+          name: isConfirmed
+          schema:
+            type: boolean
+          required: false
+          description: getTeamsByConfirmation
       responses:
         200:
           description: SUCCESS
@@ -708,11 +732,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/DefenceInfoByBlocksDto'
 
-  /secretary/{defenceId}/grades:
+  /secretary/{defenceId}/grade:
     get:
       tags: [ Secretary ]
       summary: Gets team members with grades
-      operationId: getStudentsWithGrades
+      operationId: getStudentWithGrades
       parameters:
         - in: path
           name: defenceId
@@ -727,9 +751,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StudentWithGradeDto'
+                $ref: '#/components/schemas/StudentWithGradesDto'
 
   /secretary/{defenceId}/grades/set-grade/{userId}:
     post:
@@ -955,6 +977,21 @@ paths:
                 items:
                   $ref: '#/components/schemas/SubjectDto'
 
+  /profile/categories:
+    get:
+      tags: [ Profile ]
+      summary: Get list of categories
+      operationId: getCategories
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryDto'
+
 components:
   schemas:
 
@@ -977,6 +1014,22 @@ components:
           type: string
         grade:
           type: integer
+
+    StudentWithGradesDto:
+      description: student with grade
+      properties:
+        id:
+          type: integer
+          format: int64
+        fullName:
+          type: string
+        stageName:
+          type: string
+        grades:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradeDto'
+
 
     GradeDto:
       description: grade DTO
@@ -1008,7 +1061,9 @@ components:
           description: Group id
           type: integer
           format: int64
-        name:
+        nameKaz:
+          type: string
+        nameRus:
           type: string
 
     SubjectDto:
@@ -1019,7 +1074,22 @@ components:
           description: Subject id
           type: integer
           format: int64
-        name:
+        nameKaz:
+          type: string
+        nameRus:
+          type: string
+
+    CategoryDto:
+      description: Category info's
+      type: object
+      properties:
+        id:
+          description: Category id
+          type: integer
+          format: int64
+        nameKaz:
+          type: string
+        nameRus:
           type: string
 
     GroupInfoByBlocksDto:
@@ -1044,6 +1114,17 @@ components:
           items:
             $ref: '#/components/schemas/UserDto'
 
+    CategoryInfoByBlocksDto:
+      description: Category full info
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/CategoryDto'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDto'
+
     UserInfoByBlocksDto:
       description: User full info
       type: object
@@ -1052,10 +1133,7 @@ components:
           $ref: '#/components/schemas/UserDto'
         role:
           $ref: '#/components/schemas/RoleDto'
-        group:
-          $ref: '#/components/schemas/GroupDto'
-        subject:
-          $ref: '#/components/schemas/SubjectDto'
+
 
     ShortUserInfoRequest:
       type: object
@@ -1151,6 +1229,8 @@ components:
         choices:
           type: integer
         presentationURL:
+          type: string
+        applicationFormURL:
           type: string
       required:
         - name
@@ -1285,9 +1365,7 @@ components:
         defence:
           $ref: '#/components/schemas/DefenceDto'
         team:
-          $ref: '#/components/schemas/TeamInfoWithMembersDto'
-        stage:
-          $ref: '#/components/schemas/StageDto'
+          $ref: '#/components/schemas/TeamInfoWithMemberDto'
 
     DefenceDto:
       type: object
@@ -1353,14 +1431,12 @@ components:
         group:
           $ref: '#/components/schemas/GroupDto'
 
-    TeamInfoWithMembersDto:
+    TeamInfoWithMemberDto:
       type: object
       properties:
         team:
           $ref: '#/components/schemas/TeamShortInfoDto'
-        members:
-          type: array
-          items:
+        member:
             $ref: '#/components/schemas/UserDto'
 
     StageInfoByBlocksDto:
@@ -1384,6 +1460,8 @@ components:
         presentationURL:
           type: string
         lessonRecordingURL:
+          type: string
+        applicationFormURL:
           type: string
 
 
@@ -1443,26 +1521,20 @@ components:
           format: date-time
         profilePhoto:
           type: string
+        isKazakhProficient:
+          type: boolean
+        englishProficiency:
+          type: boolean
+        pedagogicalExperience:
+          type: integer
+        pedagogicalExperienceCurrent:
+          type: integer
         group:
           $ref: '#/components/schemas/GroupDto'
         subject:
           $ref: '#/components/schemas/SubjectDto'
-
-    ProfileGetResponse:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        middleName:
-          type: string
-        profilePhoto:
-          type: string
-        group:
-          $ref: '#/components/schemas/GroupDto'
-        subject:
-          $ref: '#/components/schemas/SubjectDto'
+        category:
+          $ref: '#/components/schemas/CategoryDto'
 
     ProfileUpdateRequest:
       type: object
@@ -1482,5 +1554,17 @@ components:
         subject:
           type: integer
           format: int64
+        category:
+          type: integer
+          format: int64
+        isKazakhProficient:
+          type: boolean
+        englishProficiency:
+          type: boolean
+        pedagogicalExperience:
+          type: integer
+        pedagogicalExperienceCurrent:
+          type: integer
+
 
 

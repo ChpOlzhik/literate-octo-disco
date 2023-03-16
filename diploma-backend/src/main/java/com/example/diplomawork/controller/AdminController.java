@@ -2,13 +2,13 @@ package com.example.diplomawork.controller;
 
 import com.example.api.AdminApi;
 import com.example.diplomawork.service.AdminService;
-import com.example.diplomawork.service.AnnouncementService;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @RestController
@@ -17,17 +17,18 @@ public class AdminController implements AdminApi {
 
     private final AdminService adminService;
 
-    private final AnnouncementService announcementService;
-
+    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @Override
     public ResponseEntity<Void> createCommission(CreateCommissionMemberRequest request) {
+        logger.info("Commission create attempt: " + request.getLastName());
         adminService.createUpdateCommissionMember(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<Void> updateCommission(CreateCommissionMemberRequest request) {
+        logger.info("Commission create attempt: " + request.getLastName());
         adminService.createUpdateCommissionMember(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

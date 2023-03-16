@@ -12,7 +12,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @SpringBootApplication
 public class DiplomaWorkApplication {
@@ -39,21 +41,13 @@ public class DiplomaWorkApplication {
 
     @Bean
     @Transactional
-    CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, GroupRepository groupRepository, TeamRepository teamRepository, UserTeamRepository userTeamRepository, StageRepository stageRepository, AnnouncementRepository announcementRepository) {
+    CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, GroupRepository groupRepository, TeamRepository teamRepository, StageRepository stageRepository, AnnouncementRepository announcementRepository, SubjectRepository subjectRepository, CategoryRepository categoryRepository) {
         return args -> {
 
             roleRepository.save(new Role(null, "ROLE_ADMIN"));
             roleRepository.save(new Role(null, "ROLE_STUDENT"));
             roleRepository.save(new Role(null, "ROLE_COMMISSION"));
             roleRepository.save(new Role(null, "ROLE_SECRETARY"));
-
-            // --------------------//
-            groupRepository.save(new Group(null, "IT-1902"));
-            groupRepository.save(new Group(null, "IT-1903"));
-            groupRepository.save(new Group(null, "SE-1901"));
-            groupRepository.save(new Group(null, "SE-1903"));
-            groupRepository.save(new Group(null, "SE-1905"));
-            groupRepository.save(new Group(null, "SE-1907"));
 
             stageRepository.save(Stage.builder().name("STAGE-1").build());
             stageRepository.save(Stage.builder().name("STAGE-2").build());
@@ -172,13 +166,43 @@ public class DiplomaWorkApplication {
                     .name("ozhek")
                     .build());
 
-            userTeamRepository.save(UserTeam.builder()
-                    .id(null)
-                    .user(userRepository.findByUsername("ozhek").get())
-                    .team(teamRepository.findTeamByName("ozhek"))
-                    .build());
-
             // ------ User Team ------
+
+            // ------ Groups / Schools ------
+            List<Group> groups = new ArrayList<>();
+            for( int i = 1; i <= 10; i++){
+                groups.add(Group.builder()
+                                .id(null)
+                                .nameRus("Школа-"+i)
+                                .nameKaz("Мектеп-"+i)
+                                .build());
+            }
+            groupRepository.saveAll(groups);
+            // ------ Groups / Schools ------
+
+
+            // ------ Subjects ------
+            subjectRepository.save(new Subject(null, "Бастауыш білім беру", "Учитель начальных классов" ));
+            subjectRepository.save(new Subject(null, "Қазақ тілі мен әдебиеті", "Казахский язык и литература" ));
+            subjectRepository.save(new Subject(null, "Орыс тілі мен әдебиеті", "Русский язык и литература" ));
+            subjectRepository.save(new Subject(null, "Шет тілі мен әдебиеті", "Иностранный язык и литература" ));
+            subjectRepository.save(new Subject(null, "Математика", "Математика" ));
+            subjectRepository.save(new Subject(null, "Информатика", "Информатика" ));
+            subjectRepository.save(new Subject(null, "Физика", "Физика" ));
+            subjectRepository.save(new Subject(null, "Химия", "Химия" ));
+            subjectRepository.save(new Subject(null, "Биология", "Биология" ));
+            subjectRepository.save(new Subject(null, "География", "География" ));
+            subjectRepository.save(new Subject(null, "Тарих", "Тарих" ));
+            // ------ Subjects ------
+
+            // ------ Categories ------
+            categoryRepository.save(new Category(null, "Педагог", "Педагог"));
+            categoryRepository.save(new Category(null, "Педагог-стажер", "Педагог-тағылымдамашы"));
+            categoryRepository.save(new Category(null, "Педагог-модератор", "Педагог-модератор"));
+            categoryRepository.save(new Category(null, "Педагог-эксперт", "Педагог-сарапшы"));
+            categoryRepository.save(new Category(null, "Педагог-исследователь", "Педагог-зерттеуші"));
+            categoryRepository.save(new Category(null, "Педагог-мастер", "Педагог-шебер"));
+            // ------ Categories ------
 
         };
     }

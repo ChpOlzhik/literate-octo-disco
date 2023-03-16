@@ -7,7 +7,11 @@ import com.example.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -17,9 +21,15 @@ public class AuthController implements AuthApi {
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
     @Override
     public ResponseEntity<AuthenticationResponse> login(LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest));
+        AuthenticationResponse response = authService.login(loginRequest);
+        if (Objects.equals(response.getRole(), "ROLE_ADMIN")) {
+            logger.info("Login attempt: " + response.getRole());
+        }
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -36,7 +46,7 @@ public class AuthController implements AuthApi {
     @Override
     public ResponseEntity<Void> signup(RegisterRequest registerRequest) {
         authService.signup(registerRequest);
-        return new ResponseEntity(OK);
+        return new ResponseEntity<>(OK);
     }
 
     @Override

@@ -55,5 +55,9 @@ public class ProfileController implements ProfileApi {
         return ResponseEntity.ok(profileService.getSubjects());
     }
 
+    @Override
+    public ResponseEntity<List<CategoryDto>> getCategories(){
+        return ResponseEntity.ok(profileService.getCategories());
+    }
 
 }

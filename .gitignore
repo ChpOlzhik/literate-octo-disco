@@ -36,3 +36,6 @@ build/
 
 ### Google Cloud Credientials ###
 storage-credientials.json
+
+### Downloaded libraries ###
+lib/
