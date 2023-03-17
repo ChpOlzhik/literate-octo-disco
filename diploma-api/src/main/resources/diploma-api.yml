@@ -225,21 +225,6 @@ paths:
         204:
           description: Deleted
 
-  /admin/commission:
-    get:
-      summary: Gets all commissions
-      tags: [ Admin ]
-      operationId: getCommissions
-      responses:
-        200:
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserDto'
-
   /admin/commission/create:
     post:
       summary: Creates new commission member
@@ -591,6 +576,29 @@ paths:
         201:
           description: SUCCESS
 
+
+  /secretary/commissions:
+    get:
+      summary: Gets all commissions
+      tags: [ Secretary ]
+      operationId: getCommissions
+      parameters:
+        - in: query
+          name: subjectId
+          schema:
+            type: integer
+            format: int64
+          required: false
+          description: get Commission by subject
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommissionDto'
 
   /secretary/teams:
     get:
@@ -1176,6 +1184,23 @@ components:
           format: data-time
         profilePhoto:
           type: string
+
+    CommissionDto:
+      description: Commision info
+      type: object
+      properties:
+        id:
+          description: User id
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        middle_name:
+          type: string
+        subject:
+          $ref: '#/components/schemas/SubjectDto'
 
     RoleDto:
       description: Role info

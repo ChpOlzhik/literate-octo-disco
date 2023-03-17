@@ -34,11 +34,6 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<List<UserDto>> getCommissions() {
-        return ResponseEntity.ok(adminService.getCommissions());
-    }
-
-    @Override
     public ResponseEntity<List<StageDto>> getStages() {
         return ResponseEntity.ok(adminService.getStages());
     }

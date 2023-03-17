@@ -6,6 +6,8 @@ import com.example.diplomawork.repository.*;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,8 @@ public class AdminService {
 
     private final SubjectMapper subjectMapper;
 
+    private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
+
 
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
@@ -67,12 +71,17 @@ public class AdminService {
     }
 
     public void createUpdateGroup(GroupDto groupDto) {
-        Group group = Group.builder()
-                .id(groupDto.getId() != null ? groupDto.getId() : null)
-                .nameKaz(groupDto.getNameKaz())
-                .nameRus(groupDto.getNameRus())
-                .build();
-        groupRepository.save(group);
+        try {
+            logger.debug("Create update group request: " + groupDto.toString());
+            Group group = Group.builder()
+                    .id(groupDto.getId() != null ? groupDto.getId() : null)
+                    .nameKaz(groupDto.getNameKaz())
+                    .nameRus(groupDto.getNameRus())
+                    .build();
+            groupRepository.save(group);
+        } catch (Exception e){
+            logger.debug("Create update group request error: " + e);
+        }
     }
 
     public GroupInfoByBlocksDto getGroupInfo(Long groupId) {
@@ -85,19 +94,26 @@ public class AdminService {
     }
 
     public void deleteGroup(Long groupId) {
+        logger.debug("Delete group with id: " + groupId);
         groupRepository.deleteById(groupId);
     }
 
     public void createUpdateStage(StageDto stageDto) {
-        Stage stage = Stage.builder()
-                .id(stageDto.getId() != null ? stageDto.getId() : null)
-                .name(stageDto.getName())
-                .build();
-        stageRepository.save(stage);
+        try{
+            logger.debug("Create update stage request: " + stageDto.toString());
+            Stage stage = Stage.builder()
+                    .id(stageDto.getId() != null ? stageDto.getId() : null)
+                    .name(stageDto.getName())
+                    .build();
+            stageRepository.save(stage);
+        } catch (Exception e){
+            logger.error("Create update stage request error: " + e);
+        }
     }
 
 
     public void deleteStage(Long stageId) {
+        logger.debug("Delete stage with id: " + stageId);
         stageRepository.deleteById(stageId);
     }
 
@@ -114,6 +130,7 @@ public class AdminService {
     public void createDefence(Long teamId, CreateDefenceRequest request) {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + teamId + " not found"));
         Stage stage = stageRepository.findById(request.getStageId()).orElseThrow(() -> new EntityNotFoundException("Stage with id: " + request.getStageId() + " not found"));
+
         if (defenceRepository.existsByTeamIdAndStageId(teamId, request.getStageId())) {
             throw new IllegalAccessException("Defence with team id: " + teamId + " and stage id: " + request.getStageId() + " already exists");
         }
@@ -156,12 +173,6 @@ public class AdminService {
 
     public List<StageDto> getStages() {
         return stageRepository.findAll().stream().map(stageMapper::entity2dto).collect(Collectors.toList());
-    }
-
-    public List<UserDto> getCommissions() {
-        Role role = roleRepository.findByName("ROLE_COMMISSION");
-        List<User> commissions = userRepository.findAllByRole(role);
-        return commissions.stream().map(userMapper::entity2dto).collect(Collectors.toList());
     }
 
     public void createUpdateCommissionMember(CreateCommissionMemberRequest request) {
