@@ -98,4 +98,9 @@ public class SecretaryController implements SecretaryApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<List<CommissionDto>> getCommissions(Long subjectId) {
+        return ResponseEntity.ok(secretaryService.getCommissions(subjectId));
+    }
+
 }

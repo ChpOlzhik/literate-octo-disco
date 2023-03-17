@@ -13,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +32,12 @@ public class SecretaryService {
     private final UserCommissionGradeRepository userCommissionGradeRepository;
 
     private final DefenceCommissionRepository defenceCommissionRepository;
+
     private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;;
+
+    private final SubjectRepository subjectRepository;
 
     private final TeamMapper teamMapper;
 
@@ -39,7 +45,6 @@ public class SecretaryService {
 
     private final DefenceMapper defenceMapper;
 
-    private final StageRepository stageRepository;
     private final StageMapper stageMapper;
 
     private final GradeMapper gradeMapper;
@@ -147,6 +152,18 @@ public class SecretaryService {
     public List<UserDto> getDefenceCommission(Long defenceId) {
         List<DefenceCommission> defenceCommissions = defenceCommissionRepository.findDefenceCommissionsByDefenceId(defenceId);
         return defenceCommissions.stream().map(defenceCommission -> userMapper.entity2dto(defenceCommission.getCommission())).collect(Collectors.toList());
+    }
+
+    public List<CommissionDto> getCommissions(Long subjectId) {
+        Role role = roleRepository.findByName("ROLE_COMMISSION");
+        List<User> commissions;
+        if (subjectId != null) {
+            Optional<Subject> subject = subjectRepository.findById(subjectId);
+            if (subject.isPresent()) commissions = userRepository.findAllByRoleAndSubject(role, subject.get());
+            else commissions = userRepository.findAllByRole(role);
+        } else commissions = userRepository.findAllByRole(role);
+
+        return commissions.stream().map(userMapper::entity2CommissionDto).collect(Collectors.toList());
     }
 
 }

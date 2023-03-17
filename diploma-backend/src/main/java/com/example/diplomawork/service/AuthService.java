@@ -13,6 +13,8 @@ import com.example.models.LoginRequest;
 import com.example.models.RefreshTokenRequest;
 import com.example.models.RegisterRequest;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,16 +37,18 @@ import java.util.UUID;
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
+    private final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
     private final RoleMapper roleMapper;
 
     public void signup(RegisterRequest request) {
+        logger.debug("Signup request: user - " + request.getFirstName() + " " + request.getLastName());
         User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
