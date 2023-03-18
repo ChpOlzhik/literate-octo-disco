@@ -21,7 +21,7 @@ public class AuthController implements AuthApi {
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Override
     public ResponseEntity<AuthenticationResponse> login(LoginRequest loginRequest) {

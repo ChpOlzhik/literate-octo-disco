@@ -2,9 +2,11 @@ package com.example.diplomawork.service;
 
 import com.example.diplomawork.exception.SpringAppException;
 import com.example.diplomawork.mapper.RoleMapper;
+import com.example.diplomawork.model.Team;
 import com.example.diplomawork.model.User;
 import com.example.diplomawork.model.VerificationToken;
 import com.example.diplomawork.repository.RoleRepository;
+import com.example.diplomawork.repository.TeamRepository;
 import com.example.diplomawork.repository.UserRepository;
 import com.example.diplomawork.repository.VerificationTokenRepository;
 import com.example.diplomawork.security.JwtProvider;
@@ -42,10 +44,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
-
     private final Logger logger = LoggerFactory.getLogger(AuthService.class);
-
-    private final RoleMapper roleMapper;
+    private final TeamRepository teamRepository;
 
     public void signup(RegisterRequest request) {
         logger.debug("Signup request: user - " + request.getFirstName() + " " + request.getLastName());
@@ -59,7 +59,16 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(roleRepository.findByName("ROLE_STUDENT"))
                 .build();
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
+        if (user.getTeam() == null) {
+            logger.debug("Creating team for new user: " + request.getUsername());
+            teamRepository.save(Team.builder()
+                    .id(null)
+                    .name(user.getUsername())
+                    .creator(user)
+                    .confirmed(false)
+                    .build());
+        }
     }
 
 

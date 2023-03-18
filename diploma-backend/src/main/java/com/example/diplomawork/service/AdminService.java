@@ -54,7 +54,7 @@ public class AdminService {
 
     private final SubjectMapper subjectMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
+    private final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
 
     public void deleteUser(Long userId) {

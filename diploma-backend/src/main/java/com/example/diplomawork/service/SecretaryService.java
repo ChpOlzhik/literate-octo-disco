@@ -6,6 +6,8 @@ import com.example.diplomawork.repository.*;
 import com.example.models.*;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,18 +51,24 @@ public class SecretaryService {
 
     private final GradeMapper gradeMapper;
 
+    private final Logger logger = LoggerFactory.getLogger(SecretaryService.class);
+
 
     public List<TeamShortInfoDto> getTeams(Boolean isConfirmed) {
-
         List<Team> teams = isConfirmed == null? teamRepository.findAll(): isConfirmed? teamRepository.findAllByConfirmedTrue():teamRepository.findAllByConfirmedFalse();
-        return teams.stream().map(team -> TeamShortInfoDto.builder()
-                .id(team.getId())
-                .name(team.getName())
-                .build()).collect(Collectors.toList());
+        return teams.stream().map(teamMapper::entity2dto).collect(Collectors.toList());
     }
 
     public void deleteTeam(Long teamId) {
         teamRepository.deleteById(teamId);
+    }
+
+    public void updateTeamConfirmation(Long teamId, Boolean confirmed){
+        Team team = teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team with id: " + teamId + " not found !"));
+        logger.debug("Setting team confirmation status: teamId - " +teamId +  " confirmed - " + confirmed);
+        team.setConfirmed(confirmed);
+        teamRepository.save(team);
+        logger.debug("Setting team confirmation status: DONE");
     }
 
 

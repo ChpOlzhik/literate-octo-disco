@@ -21,7 +21,7 @@ public class StudentController implements StudentApi {
 
     private final StorageService storageService;
 
-    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
+    private final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @Override
     public ResponseEntity<Void> createTeam(TeamCreateUpdateRequest request) {
