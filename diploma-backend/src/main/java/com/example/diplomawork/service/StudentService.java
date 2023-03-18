@@ -48,6 +48,15 @@ public class StudentService {
         logger.debug(" Team involved " + team.getName());
     }
 
+    public void updatePresentationURL(String presentationURL){
+        User currentUser = authService.getCurrentUser();
+        Team team = currentUser.getTeam();
+        team.setPresentationURL(presentationURL);
+        logger.debug("Setting presentatio url for team:" + team.getId());
+        teamRepository.save(team);
+        logger.debug("Set presentatio url for team:" + team.getId());
+    }
+
 
     public TeamInfoWithMemberDto getTeam() {
         User currentUser = authService.getCurrentUser();
