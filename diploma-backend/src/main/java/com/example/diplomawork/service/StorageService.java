@@ -30,7 +30,7 @@ public class StorageService {
 
     private final TeamRepository teamRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
+    private final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @Autowired
     public StorageService(AuthService authService, AnnouncementRepository announcementRepository, UserRepository userRepository,TeamRepository teamRepository) {

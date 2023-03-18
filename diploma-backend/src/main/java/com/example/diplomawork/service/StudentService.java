@@ -32,7 +32,7 @@ public class StudentService {
 
     private final UserMapper userMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public void createUpdateTeam(TeamCreateUpdateRequest request) {
         User currentUser = authService.getCurrentUser();

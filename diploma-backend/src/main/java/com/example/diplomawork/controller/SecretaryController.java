@@ -5,6 +5,7 @@ import com.example.diplomawork.service.AnnouncementService;
 import com.example.diplomawork.service.SecretaryService;
 import com.example.diplomawork.service.StorageService;
 import com.example.models.*;
+import com.google.api.Http;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,6 +102,12 @@ public class SecretaryController implements SecretaryApi {
     @Override
     public ResponseEntity<List<CommissionDto>> getCommissions(Long subjectId) {
         return ResponseEntity.ok(secretaryService.getCommissions(subjectId));
+    }
+
+    @Override
+    public ResponseEntity<Void> updateTeamConfirmation(Long teamId, Boolean confirmed){
+        secretaryService.updateTeamConfirmation(teamId, confirmed);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

@@ -17,7 +17,7 @@ public class AdminController implements AdminApi {
 
     private final AdminService adminService;
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
+    private final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @Override
     public ResponseEntity<Void> createCommission(CreateCommissionMemberRequest request) {

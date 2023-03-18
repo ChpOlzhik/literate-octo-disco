@@ -642,6 +642,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeamInfoByBlocksDto'
+
+    put:
+      tags: [ Secretary ]
+      summary: Update team confirmation
+      operationId: updateTeamConfirmation
+      parameters:
+        - in: path
+          name: teamId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the team to get
+        - in: query
+          name: confirmed
+          schema:
+            type: boolean
+          required: true
+          description: set confirmed status
+      responses:
+        200:
+          description: SUCCESS
+
     delete:
       tags: [ Secretary ]
       summary: Delete team by id
@@ -1482,6 +1505,8 @@ components:
           format: int64
         name:
           type: string
+        confirmed:
+          type: boolean
         presentationURL:
           type: string
         lessonRecordingURL:

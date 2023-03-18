@@ -35,7 +35,7 @@ public class ProfileService {
 
     private final CategoryRepository categoryRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
+    private final Logger logger = LoggerFactory.getLogger(ProfileService.class);
 
 
     public ProfileDto getUserProfile(){
