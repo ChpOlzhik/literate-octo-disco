@@ -31,9 +31,9 @@ public class StudentController implements StudentApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateTeam(TeamCreateUpdateRequest request){
-        logger.info("Team update| Set presentation URL: " + request.getName());
-        studentService.createUpdateTeam(request);
+    public ResponseEntity<Void> updatePresentationURL(InlineObject request){
+        logger.info("Team update | Set presentation URL: " + request.getPresentationURL());
+        studentService.updatePresentationURL(request.getPresentationURL());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

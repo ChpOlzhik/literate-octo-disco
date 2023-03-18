@@ -73,15 +73,20 @@ paths:
 
   /student/team/update:
     put:
-      summary: Updates a team
+      summary: Set a presentation url
       tags: [ Student ]
-      operationId: updateTeam
+      operationId: updatePresentationURL
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TeamCreateUpdateRequest'
+               type: object
+               properties:
+                 presentationURL:
+                   type: string
+
+
       responses:
         204:
           description: Success
