@@ -3,7 +3,7 @@ version: '3.3'
 services:
   postgres:
     container_name: postgres
-    image: postgres
+    image: postgres:14
     environment:
       POSTGRES_DB: almatyustazy
       POSTGRES_USER: postgres
@@ -16,10 +16,9 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-
+  
   backend:
     image: ozhek/almatyustazy:latest
-
     environment:
       - DB_URL
       - DB_NAME
@@ -31,16 +30,6 @@ services:
       - postgres
     depends_on:
       - postgres
-
-  swagger-ui:
-    image: swaggerapi/swagger-ui
-    environment:
-      SWAGGER_JSON: /api.yaml
-    ports:
-      - "8082:8080"
-    volumes:
-       - /home/ubuntu/almaty-ustazy/diploma-api/src/main/resources/diploma-api.yml:/api.yaml
-
 
 networks:
   postgres:

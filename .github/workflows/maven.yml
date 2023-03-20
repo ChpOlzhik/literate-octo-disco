@@ -8,9 +8,15 @@ on:
     branches:
       - master
 
+env:
+  DB_URL: ${{ secrets.DB_URL }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -25,7 +31,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: ozhek/almatyustazy
-          tags: v1
+          tags: latest
           registry: docker.io
           dockerfile: Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
