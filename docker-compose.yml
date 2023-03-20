@@ -19,11 +19,17 @@ services:
 
   backend:
     image: ozhek/almatyustazy:latest
+
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS
+      - DB_URL
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
     ports:
-      - "8081:8080"
+      - "8080"
     networks:
+      - postgres
+    depends_on:
       - postgres
 
   swagger-ui:
