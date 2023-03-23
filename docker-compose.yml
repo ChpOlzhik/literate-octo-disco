@@ -2,8 +2,7 @@ version: '3.3'
 
 services:
   postgres:
-    container_name: postgres
-    image: postgres
+    image: postgres:14
     environment:
       POSTGRES_DB: almatyustazy
       POSTGRES_USER: postgres
@@ -11,8 +10,6 @@ services:
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
-    ports:
-      - "5432:5432"
     networks:
       - postgres
     restart: unless-stopped
@@ -21,7 +18,7 @@ services:
     image: ozhek/almatyustazy:v1-prod
 
     environment:
-      - DB_URL
+      - DB_URL: postgres
       - DB_NAME
       - DB_USER
       - DB_PASSWORD
