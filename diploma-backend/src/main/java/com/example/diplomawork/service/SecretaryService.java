@@ -57,6 +57,12 @@ public class SecretaryService {
         return teams.stream().map(teamMapper::entity2dto).collect(Collectors.toList());
     }
 
+    public UsersNumberDto getUsersAmount(){
+        return UsersNumberDto.builder()
+                .number(userRepository.countByRole(roleRepository.findByName("ROLE_STUDENT")))
+                .build();
+    }
+
     public void deleteTeam(Long teamId) {
         teamRepository.deleteById(teamId);
     }

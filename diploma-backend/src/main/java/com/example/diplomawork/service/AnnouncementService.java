@@ -54,7 +54,7 @@ public class AnnouncementService {
 
     public CreateAnnouncementResponse createUpdateAnnouncement(AnnouncementCreateUpdateRequest request){
         Announcement newAnnouncement = Announcement.builder()
-                .id(request.getId() == null? request.getId() : null)
+                .id(request.getId() != null? request.getId() : null)
                 .title(request.getTitle())
                 .text(request.getText())
                 .content(request.getText())

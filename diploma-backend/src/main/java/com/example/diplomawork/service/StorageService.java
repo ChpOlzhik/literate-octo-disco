@@ -44,7 +44,7 @@ public class StorageService {
 
     public FileUploadResponse uploadAndSetAnnouncementFile(MultipartFile file, Long announcementId){
         try {
-            String filePath = "announcements/announcement-" + announcementId.toString();
+            String filePath = "test/announcement-" + announcementId.toString();
             logger.debug("Upload file for Announcement with id: " + announcementId);
             Announcement announcement = announcementRepository.findById(announcementId).get();
             String announcementFileURL = uploadFile(file, this.bucketName, filePath);
@@ -63,7 +63,7 @@ public class StorageService {
     public FileUploadResponse uploadAndSetProfilePicture(MultipartFile file){
         try {
             User currentUser = authService.getCurrentUser();
-            String filePath = "profile_images/" + currentUser.getId().toString();
+            String filePath = "test/picture-" + currentUser.getId().toString();
             String profilePhotoURL = uploadFile(file, this.bucketName, filePath);
             currentUser.setProfilePhoto(profilePhotoURL);
             userRepository.save(currentUser);
@@ -78,7 +78,7 @@ public class StorageService {
         try{
             User currentUser = authService.getCurrentUser();
             Team team = currentUser.getTeam();
-            String filePath = "participant_presentations/" + team.getName();
+            String filePath = "test/preentation-" + team.getName();
             logger.debug("Presentation upload request | Team name: " + team.getName());
             String presentationURL = uploadFile(file, this.bucketName, filePath);
             logger.debug("Team name: " + team.getName() + "presentation url is set: " + !presentationURL.equals(""));
@@ -95,7 +95,7 @@ public class StorageService {
         try{
             User currentUser = authService.getCurrentUser();
             Team team = currentUser.getTeam();
-            String filePath = "application_forms/" + team.getName();
+            String filePath = "test/form-" + team.getName();
             logger.debug("Application form upload request | Team name: " + team.getName());
             String applicationFormURL = uploadFile(file, this.bucketName, filePath);
             logger.debug("Team name: " + team.getName() + "application form file url is set: " + !applicationFormURL.equals(""));
