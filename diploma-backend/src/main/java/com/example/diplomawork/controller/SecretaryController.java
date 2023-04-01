@@ -38,6 +38,24 @@ public class SecretaryController implements SecretaryApi {
     }
 
     @Override
+    public ResponseEntity<Void> updateDefence(Long defenceId, CreateDefenceRequest request){
+        secretaryService.updateDefence(defenceId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteDefence(Long defenceId){
+        secretaryService.deleteDefence(defenceId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<Void> createDefence(Long teamId, CreateDefenceRequest request) {
+        secretaryService.createDefence(teamId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<List<DefenceShortInfoDto>> getSecretaryDefences() {
         return ResponseEntity.ok(secretaryService.getDefencesInfo());
     }

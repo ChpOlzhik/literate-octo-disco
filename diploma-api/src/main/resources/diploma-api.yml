@@ -258,29 +258,6 @@ paths:
         200:
           description: SUCCESS
 
-  /admin/team/{teamId}/defence/create:
-    post:
-      tags: [ Admin ]
-      summary: Creates defence for team
-      operationId: createDefence
-      parameters:
-        - in: path
-          name: teamId
-          schema:
-            type: integer
-            format: int64
-          required: true
-          description: Numeric ID of the team
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateDefenceRequest'
-      responses:
-        201:
-          description: Success
-
   /admin/group/create:
     post:
       summary: Creates a new group
@@ -627,6 +604,32 @@ paths:
                 items:
                   $ref: '#/components/schemas/TeamShortInfoDto'
 
+
+  /secretary/team/{teamId}/defence/create:
+    post:
+      tags: [ Secretary ]
+      summary: Creates defence for team
+      operationId: createDefence
+      parameters:
+        - in: path
+          name: teamId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDefenceRequest'
+      responses:
+        201:
+          description: Success
+
+
+
   /secretary/team/{teamId}:
     get:
       tags: [ Secretary ]
@@ -724,6 +727,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/DefenceShortInfoDto'
 
+
   /secretary/defence/{defenceId}/commissions:
     get:
       tags: [ Secretary ]
@@ -747,6 +751,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/UserDto'
 
+
   /secretary/defence/{defenceId}:
     get:
       tags: [ Secretary ]
@@ -767,6 +772,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DefenceInfoByBlocksDto'
+
+    put:
+      tags: [ Secretary ]
+      summary: Update defence info
+      operationId: updateDefence
+      parameters:
+        - in: path
+          name: defenceId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the defence to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDefenceRequest'
+      responses:
+        200:
+          description: SUCCESS
+
+    delete:
+      tags: [ Secretary ]
+      summary: Delete defence by id
+      operationId: deleteDefence
+      parameters:
+        - in: path
+          name: defenceId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the defence to delete
+      responses:
+        204:
+          description: Deleted
 
   /secretary/{defenceId}/grade:
     get:
@@ -1232,8 +1275,21 @@ components:
         profilePhoto:
           type: string
 
+    TeamCreatorDto:
+      description: User info
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        middle_name:
+          type: string
+        subject:
+          $ref: '#/components/schemas/SubjectDto'
+
     CommissionDto:
-      description: Commision info
+      description: Commission info
       type: object
       properties:
         id:
@@ -1248,6 +1304,15 @@ components:
           type: string
         subject:
           $ref: '#/components/schemas/SubjectDto'
+
+    CommissionGradeDto:
+      description: Commission and grade for defence
+      type: object
+      properties:
+        commission:
+          $ref: '#/components/schemas/CommissionDto'
+        grade:
+          type: integer
 
     RoleDto:
       description: Role info
@@ -1450,6 +1515,12 @@ components:
           format: date-time
         stage:
           $ref: '#/components/schemas/StageDto'
+        grades:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommissionGradeDto'
+
+
 
     DefenceShortInfoDto:
       type: object
@@ -1529,6 +1600,8 @@ components:
           format: int64
         name:
           type: string
+        creator:
+          $ref: '#/components/schemas/TeamCreatorDto'
         confirmed:
           type: boolean
         presentationURL:

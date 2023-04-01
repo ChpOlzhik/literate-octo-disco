@@ -38,11 +38,6 @@ public class AdminController implements AdminApi {
         return ResponseEntity.ok(adminService.getStages());
     }
 
-    @Override
-    public ResponseEntity<Void> createDefence(Long teamId, CreateDefenceRequest request) {
-        adminService.createDefence(teamId, request);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @Override
     public ResponseEntity<Void> deleteUser(Long userId) {

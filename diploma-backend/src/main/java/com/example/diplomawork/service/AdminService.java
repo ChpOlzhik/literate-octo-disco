@@ -126,32 +126,6 @@ public class AdminService {
                 .build();
     }
 
-    @SneakyThrows
-    public void createDefence(Long teamId, CreateDefenceRequest request) {
-        Team team = teamRepository.findById(teamId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + teamId + " not found"));
-        Stage stage = stageRepository.findById(request.getStageId()).orElseThrow(() -> new EntityNotFoundException("Stage with id: " + request.getStageId() + " not found"));
-
-        if (defenceRepository.existsByTeamIdAndStageId(teamId, request.getStageId())) {
-            throw new IllegalAccessException("Defence with team id: " + teamId + " and stage id: " + request.getStageId() + " already exists");
-        }
-        Defence defence = Defence.builder()
-                .defenceDate(request.getDefenceDate())
-                .stage(stage)
-                .team(team)
-                .build();
-        defenceRepository.saveAndFlush(defence);
-        for (Long commission : request.getCommissions()) {
-            User user = userRepository.findById(commission).get();
-            if (!user.getRole().getName().equals("ROLE_COMMISSION")) {
-                throw new EntityNotFoundException("The user's role is not commission");
-            }
-            DefenceCommission build = DefenceCommission.builder()
-                    .defence(defence)
-                    .commission(user).build();
-            defenceCommissionRepository.save(build);
-        }
-    }
-
     private List<TeamInfoByBlocksDto> getConfirmedTeams() {
         return teamRepository.findAllByConfirmedTrue().stream().map(team -> TeamInfoByBlocksDto.builder()
                 .team(teamMapper.entity2dto(team))

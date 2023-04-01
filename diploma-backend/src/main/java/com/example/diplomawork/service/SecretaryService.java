@@ -5,8 +5,10 @@ import com.example.diplomawork.model.*;
 import com.example.diplomawork.repository.*;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,8 @@ public class SecretaryService {
     private final RoleRepository roleRepository;;
 
     private final SubjectRepository subjectRepository;
+
+    private final StageRepository stageRepository;
 
     private final TeamMapper teamMapper;
 
@@ -75,6 +79,36 @@ public class SecretaryService {
         logger.debug("Setting team confirmation status: DONE");
     }
 
+    @SneakyThrows
+    public void createDefence(Long teamId, CreateDefenceRequest request) {
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + teamId + " not found"));
+        Stage stage = stageRepository.findById(request.getStageId()).orElseThrow(() -> new EntityNotFoundException("Stage with id: " + request.getStageId() + " not found"));
+
+        if (defenceRepository.existsByTeamIdAndStageId(teamId, request.getStageId())) {
+            throw new IllegalAccessException("Defence with team id: " + teamId + " and stage id: " + request.getStageId() + " already exists");
+        }
+
+        Defence defence = Defence.builder()
+                .defenceDate(request.getDefenceDate())
+                .stage(stage)
+                .team(team)
+                .build();
+        defenceRepository.saveAndFlush(defence);
+        this.setDefenceCommission(defence, request.getCommissions());
+    }
+
+    public void updateDefence(Long defenceId, CreateDefenceRequest request){
+        Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + defenceId + " not found"));
+        defence.setDefenceDate(request.getDefenceDate());
+        defence.setStage(defence.getStage());
+        defenceRepository.saveAndFlush(defence);
+        userCommissionGradeRepository.deleteAllByDefenceId(defenceId);
+        this.setDefenceCommission(defence, request.getCommissions());
+    }
+
+    public void deleteDefence(Long defenceId){
+        defenceRepository.deleteById(defenceId);
+    }
 
     public TeamInfoByBlocksDto getTeamInfo(Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + teamId + " not found"));
@@ -83,6 +117,7 @@ public class SecretaryService {
                 .id(defence.getId())
                 .defenceDate(defence.getDefenceDate())
                 .stage(stageMapper.entity2dto(defence.getStage()))
+                .grades(defence.getDefenceGrades().stream().map(gradeMapper::entity2cgdto).collect(Collectors.toList()))
                 .build()).collect(Collectors.toList());
 
         return TeamInfoByBlocksDto.builder()
@@ -176,6 +211,19 @@ public class SecretaryService {
         } else commissions = userRepository.findAllByRole(role);
 
         return commissions.stream().map(userMapper::entity2CommissionDto).collect(Collectors.toList());
+    }
+
+    private void setDefenceCommission(Defence defence, List<Long> commissions){
+        for (Long commission : commissions) {
+            User user = userRepository.findById(commission).get();
+            if (!user.getRole().getName().equals("ROLE_COMMISSION")) {
+                throw new EntityNotFoundException("The user's role is not commission");
+            }
+            DefenceCommission build = DefenceCommission.builder()
+                    .defence(defence)
+                    .commission(user).build();
+            defenceCommissionRepository.save(build);
+        }
     }
 
 }

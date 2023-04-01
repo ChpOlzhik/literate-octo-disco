@@ -5,6 +5,7 @@ import com.example.diplomawork.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -34,18 +35,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.cors().and();
         httpSecurity.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/**")
-                .permitAll()
-                .antMatchers("/admin/**")
-                .hasAuthority("ROLE_ADMIN")
-                .antMatchers("/commission/**")
-                .hasAnyAuthority("ROLE_COMMISSION", "ROLE_ADMIN")
-                .antMatchers("/student/**")
-                .hasAnyAuthority("ROLE_STUDENT", "ROLE_ADMIN")
-                .antMatchers("/secretary/**")
-                .hasAnyAuthority("ROLE_SECRETARY", "ROLE_ADMIN")
-                .antMatchers("/profile/**")
-                .authenticated()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/commission/**").hasAnyAuthority("ROLE_COMMISSION", "ROLE_ADMIN")
+                .antMatchers("/student/**").hasAnyAuthority("ROLE_STUDENT", "ROLE_ADMIN")
+                .antMatchers("/secretary/**").hasAnyAuthority("ROLE_SECRETARY", "ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/profile/announcements/**").permitAll()
+                .antMatchers("/profile/**").authenticated()
                 .anyRequest()
                 .authenticated();
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
