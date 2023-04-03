@@ -194,6 +194,34 @@ paths:
                 $ref: '#/components/schemas/LogoutResponse'
           description: Success
 
+  /auth/resetPasswordToken/create:
+    post:
+      tags: [ Auth ]
+      description: Create password reset token
+      operationId: createPasswordResetRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetTokenRequest'
+      responses:
+        200:
+          description: success
+
+  /auth/resetPassword:
+    put:
+      tags: [ Auth ]
+      description: Update password
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        200:
+          description: success
+
   /admin/user/{userId}:
     get:
       tags: [ Admin ]
@@ -1467,7 +1495,27 @@ components:
           type: string
       required:
         - token
+        - username
+
+
+    ResetPasswordRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+      required:
+        - token
         - password
+
+    PasswordResetTokenRequest:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+        - email
 
     RefreshTokenResponse:
       type: object

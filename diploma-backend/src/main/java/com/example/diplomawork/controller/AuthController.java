@@ -2,24 +2,24 @@ package com.example.diplomawork.controller;
 
 import com.example.api.AuthApi;
 import com.example.diplomawork.service.AuthService;
+import com.example.diplomawork.service.PasswordResetTokenService;
 import com.example.diplomawork.service.RefreshTokenService;
 import com.example.models.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 import java.util.Objects;
-
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
 public class AuthController implements AuthApi {
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
+    private final PasswordResetTokenService passwordResetService;
 
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -54,4 +54,17 @@ public class AuthController implements AuthApi {
         authService.verifyAccount(token);
         return ResponseEntity.status(OK).body(new TokenVerifyResponse().message("Account activated successfully"));
     }
+
+    public ResponseEntity<Void> createPasswordResetRequest(PasswordResetTokenRequest request){
+        authService.generateResetPasswordToken(request.getEmail());
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<Void> resetPassword(ResetPasswordRequest request){
+        authService.resetPassword(request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
 }

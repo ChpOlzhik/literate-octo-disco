@@ -2,6 +2,7 @@ package com.example.diplomawork.service;
 
 import com.example.diplomawork.exception.SpringAppException;
 import com.example.diplomawork.mapper.RoleMapper;
+import com.example.diplomawork.model.PasswordResetToken;
 import com.example.diplomawork.model.Team;
 import com.example.diplomawork.model.User;
 import com.example.diplomawork.model.VerificationToken;
@@ -10,13 +11,12 @@ import com.example.diplomawork.repository.TeamRepository;
 import com.example.diplomawork.repository.UserRepository;
 import com.example.diplomawork.repository.VerificationTokenRepository;
 import com.example.diplomawork.security.JwtProvider;
-import com.example.models.AuthenticationResponse;
-import com.example.models.LoginRequest;
-import com.example.models.RefreshTokenRequest;
-import com.example.models.RegisterRequest;
+import com.example.models.*;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,6 +44,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+    private final PasswordResetTokenService passwordResetTokenService;
+    private final EmailService emailService;
     private final Logger logger = LoggerFactory.getLogger(AuthService.class);
     private final TeamRepository teamRepository;
 
@@ -132,4 +134,18 @@ public class AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
     }
+
+    public ResponseEntity<Void> generateResetPasswordToken(String email){
+        String resetToken = passwordResetTokenService.generatePasswordResetToken(email);
+        emailService.sendEmail(email, "Password Reset Almaty Ustazy 2023", "Чтобы восстановить пароль перейдите по ссылке: https://almatyustazy-2023.kz/password_reset?token=" + resetToken);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    public ResponseEntity<Void> resetPassword(ResetPasswordRequest request){
+        User user = passwordResetTokenService.getUserAndValidate(request.getToken());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        passwordResetTokenService.deletePasswordResetToken(request.getToken());
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
 }
