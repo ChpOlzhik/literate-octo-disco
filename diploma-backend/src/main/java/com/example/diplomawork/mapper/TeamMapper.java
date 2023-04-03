@@ -1,12 +1,10 @@
 package com.example.diplomawork.mapper;
 
+import com.example.diplomawork.model.Group;
 import com.example.diplomawork.model.Subject;
 import com.example.diplomawork.model.Team;
 import com.example.diplomawork.model.User;
-import com.example.models.SubjectDto;
-import com.example.models.TeamCreateUpdateRequest;
-import com.example.models.TeamCreatorDto;
-import com.example.models.TeamShortInfoDto;
+import com.example.models.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -24,5 +22,6 @@ public interface TeamMapper {
 
     TeamCreatorDto user2creatorDto(User user);
 
+    GroupDto entity2dto(Group group);
     SubjectDto entity2dto(Subject subject);
 }

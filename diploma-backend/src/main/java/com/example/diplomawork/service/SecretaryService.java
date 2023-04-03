@@ -122,7 +122,6 @@ public class SecretaryService {
 
         return TeamInfoByBlocksDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .creator(userMapper.entity2dto(team.getCreator()))
                 .defences(defences)
                 .build();
     }

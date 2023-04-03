@@ -129,7 +129,6 @@ public class AdminService {
     private List<TeamInfoByBlocksDto> getConfirmedTeams() {
         return teamRepository.findAllByConfirmedTrue().stream().map(team -> TeamInfoByBlocksDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .creator(userMapper.entity2dto(team.getCreator()))
                 .build()).collect(Collectors.toList());
     }
 

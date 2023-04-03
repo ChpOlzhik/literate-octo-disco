@@ -1550,16 +1550,10 @@ components:
       properties:
         team:
           $ref: '#/components/schemas/TeamShortInfoDto'
-        creator:
-          $ref: '#/components/schemas/UserDto'
         defences:
           type: array
           items:
             $ref: '#/components/schemas/DefenceDto'
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserDto'
 
     UserTeamInfoByBlockDto:
       type: object

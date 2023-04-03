@@ -7,6 +7,7 @@ import com.example.models.AnnouncementCreateUpdateRequest;
 import com.example.models.AnnouncementDto;
 import com.example.models.CreateAnnouncementResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,7 @@ public class AnnouncementService {
     private final UserRepository userRepository;
 
     public List<AnnouncementDto> getAnnouncements(){
-        List<Announcement> announcements = announcementRepository.findAll();
+        List<Announcement> announcements = announcementRepository.findAllByOrderByDateAsc();
         List<AnnouncementDto> announcementDtos = new ArrayList<>();
         announcements.forEach(announcement -> {
             announcementDtos.add(AnnouncementDto.builder()
