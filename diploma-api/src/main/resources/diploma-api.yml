@@ -1313,6 +1313,13 @@ components:
           type: string
         middle_name:
           type: string
+        email:
+          type: string
+        birthDate:
+          type: string
+          format: date-time
+        group:
+          $ref: '#/components/schemas/GroupDto'
         subject:
           $ref: '#/components/schemas/SubjectDto'
 
