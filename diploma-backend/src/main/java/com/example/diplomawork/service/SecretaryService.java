@@ -99,7 +99,6 @@ public class SecretaryService {
 
     public void updateDefence(Long defenceId, CreateDefenceRequest request){
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + defenceId + " not found"));
-        defence.setDefenceDate(request.getDefenceDate());
         defence.setStage(defence.getStage());
         defenceRepository.saveAndFlush(defence);
         userCommissionGradeRepository.deleteAllByDefenceId(defenceId);
@@ -137,7 +136,6 @@ public class SecretaryService {
         Team team = defence.getTeam();
         TeamInfoWithMemberDto teamInfo = TeamInfoWithMemberDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .member(userMapper.entity2dto(team.getCreator()))
                 .build();
 
         return DefenceInfoByBlocksDto.builder()

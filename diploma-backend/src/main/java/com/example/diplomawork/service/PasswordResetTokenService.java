@@ -7,6 +7,7 @@ import com.example.diplomawork.repository.PasswordResetTokenRepository;
 import com.example.diplomawork.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +22,14 @@ public class PasswordResetTokenService {
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final UserRepository userRepository;
-    public String generatePasswordResetToken(String email) {
+    public Pair<String, String> generatePasswordResetToken(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(()->new EntityNotFoundException("No such user with email:" + email));
         PasswordResetToken resetToken = new PasswordResetToken();
         resetToken.setToken(UUID.randomUUID().toString());
         resetToken.setExpireDate(Instant.now().plusSeconds(43200));
         resetToken.setUser(user);
         passwordResetTokenRepository.save(resetToken);
-        return resetToken.getToken();
+        return Pair.of(resetToken.getToken(), user.getUsername());
     }
 
     @SneakyThrows

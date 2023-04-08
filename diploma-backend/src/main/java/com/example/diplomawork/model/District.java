@@ -5,14 +5,13 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Entity(name = "groups")
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = "districts")
 @Builder
-public class Group {
-
+public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,15 +19,13 @@ public class Group {
     private String nameKaz;
     private String nameRus;
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    private List<User> groupUsers;
+    @OneToMany(mappedBy = "district", fetch = FetchType.LAZY)
+    private List<Group> districtGroups;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private District district;
-
-    public Group(Long id, String nameKaz, String nameRus) {
+    public District(Long id, String nameKaz, String nameRus) {
         this.id = id;
         this.nameKaz = nameKaz;
         this.nameRus = nameRus;
     }
+
 }

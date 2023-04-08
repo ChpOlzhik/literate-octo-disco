@@ -12,6 +12,7 @@ import com.example.diplomawork.repository.UserRepository;
 import com.example.diplomawork.repository.VerificationTokenRepository;
 import com.example.diplomawork.security.JwtProvider;
 import com.example.models.*;
+import org.springframework.data.util.Pair;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,8 +137,11 @@ public class AuthService {
     }
 
     public ResponseEntity<Void> generateResetPasswordToken(String email){
-        String resetToken = passwordResetTokenService.generatePasswordResetToken(email);
-        emailService.sendEmail(email, "Password Reset Almaty Ustazy 2023", "Чтобы восстановить пароль перейдите по ссылке: https://almatyustazy-2023.kz/password_reset?token=" + resetToken);
+        Pair<String, String> tokenAndUsername = passwordResetTokenService.generatePasswordResetToken(email);
+        emailService.sendEmail(email,
+                "Password Reset Almaty Ustazy 2023",
+                "Чтобы восстановить пароль перейдите по ссылке: https://almatyustazy-2023.kz/password_reset?token=" + tokenAndUsername.getFirst()
+                    + "\n  Ваш логин: " + tokenAndUsername.getSecond());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

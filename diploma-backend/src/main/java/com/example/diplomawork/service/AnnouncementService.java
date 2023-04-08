@@ -24,7 +24,7 @@ public class AnnouncementService {
     private final UserRepository userRepository;
 
     public List<AnnouncementDto> getAnnouncements(){
-        List<Announcement> announcements = announcementRepository.findAllByOrderByDateAsc();
+        List<Announcement> announcements = announcementRepository.findAllByOrderByDateDesc();
         List<AnnouncementDto> announcementDtos = new ArrayList<>();
         announcements.forEach(announcement -> {
             announcementDtos.add(AnnouncementDto.builder()

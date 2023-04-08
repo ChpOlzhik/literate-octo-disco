@@ -41,7 +41,6 @@ public class CommissionService {
         Team team = defence.getTeam();
         TeamInfoWithMemberDto teamInfo = TeamInfoWithMemberDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .member(userMapper.entity2dto(team.getCreator()))
                 .build();
 
         return DefenceInfoByBlocksDto.builder()

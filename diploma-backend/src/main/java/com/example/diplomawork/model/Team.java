@@ -30,10 +30,11 @@ public class Team {
 
     private String presentationURL;
 
+    private String ArticleURL;
+
     private String lessonRecordingURL;
 
     private String applicationFormURL;
-
 
     public Team(Long id, @NonNull String name, User creator, Boolean confirmed, String presentationURL, String lessonRecordingURL, String applicationFormURL) {
         this.id = id;

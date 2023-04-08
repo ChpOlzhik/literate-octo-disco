@@ -34,20 +34,6 @@ public class StudentService {
 
     private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
-    public void createUpdateTeam(TeamCreateUpdateRequest request) {
-        User currentUser = authService.getCurrentUser();
-        Team team = Team.builder()
-                .id(request.getTeamId() != null ? request.getTeamId() : null)
-                .name(request.getName())
-                .creator(currentUser)
-                .presentationURL(request.getPresentationURL())
-                .confirmed(false)
-                .build();
-
-        teamRepository.save(team);
-        logger.debug(" Team involved " + team.getName());
-    }
-
     public void updatePresentationURL(String presentationURL){
         User currentUser = authService.getCurrentUser();
         Team team = currentUser.getTeam();
@@ -57,6 +43,15 @@ public class StudentService {
         logger.debug("Set presentatio url for team:" + team.getId());
     }
 
+    public void updateArticleURL(String articleURL){
+        User currentUser = authService.getCurrentUser();
+        Team team = currentUser.getTeam();
+        team.setArticleURL(articleURL);
+        logger.debug("Setting article url for team:" + team.getId());
+        teamRepository.save(team);
+        logger.debug("Set article url for team:" + team.getId());
+    }
+
 
     public TeamInfoWithMemberDto getTeam() {
         User currentUser = authService.getCurrentUser();
@@ -64,7 +59,6 @@ public class StudentService {
         logger.debug("Team Info for team: " + team.getName());
         return TeamInfoWithMemberDto.builder()
                 .team(teamMapper.entity2dto(team))
-                .member(userMapper.entity2dto(currentUser))
                 .build();
     }
 

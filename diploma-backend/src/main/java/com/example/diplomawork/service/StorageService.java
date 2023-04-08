@@ -7,6 +7,7 @@ import com.example.diplomawork.repository.TeamRepository;
 import com.example.diplomawork.repository.UserRepository;
 import com.example.models.FileUploadResponse;
 import com.google.cloud.storage.*;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,7 @@ public class StorageService {
     private final TeamRepository teamRepository;
 
     private final Logger logger = LoggerFactory.getLogger(StudentController.class);
+    private final boolean isTest;
 
     @Autowired
     public StorageService(AuthService authService, AnnouncementRepository announcementRepository, UserRepository userRepository,TeamRepository teamRepository) {
@@ -40,6 +42,7 @@ public class StorageService {
         this.announcementRepository = announcementRepository;
         this.storage = StorageOptions.getDefaultInstance().getService();
         this.bucketName = "almatyustazy-profile-bucket";
+        this.isTest = true;
     }
 
     public FileUploadResponse uploadAndSetAnnouncementFile(MultipartFile file, Long announcementId){
@@ -91,6 +94,23 @@ public class StorageService {
         return FileUploadResponse.builder().fileUrl("").build();
     }
 
+    public FileUploadResponse uploadParticipantArticle(MultipartFile file){
+        try{
+            User currentUser = authService.getCurrentUser();
+            Team team = currentUser.getTeam();
+            String filePath = "participant_articles/article-" + team.getName();
+            logger.debug("Article upload request | Team name: " + team.getName());
+            String articleURL = uploadFile(file, this.bucketName, filePath);
+            logger.debug("Team name: " + team.getName() + "presentation url is set: " + !articleURL.equals(""));
+            team.setPresentationURL(articleURL);
+            teamRepository.saveAndFlush(team);
+            return FileUploadResponse.builder().fileUrl(articleURL).build();
+        } catch (Exception e){
+            logger.error("Upload presentation: " + e);
+        }
+        return FileUploadResponse.builder().fileUrl("").build();
+    }
+
     public FileUploadResponse uploadParticipantApplicationForm(MultipartFile file){
         try{
             User currentUser = authService.getCurrentUser();
@@ -110,7 +130,7 @@ public class StorageService {
 
     private String uploadFile(MultipartFile file, String bucketName, String filePath){
         try{
-            BlobId blobId = BlobId.of(bucketName, filePath);
+            BlobId blobId = BlobId.of(bucketName, (this.isTest?"":"test/") + filePath);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
             logger.info("Writing files with blob info: " + blobInfo.getName());
             Blob blob = storage.create(blobInfo, file.getBytes());

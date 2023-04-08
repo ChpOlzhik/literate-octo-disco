@@ -24,16 +24,16 @@ public class StudentController implements StudentApi {
     private final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @Override
-    public ResponseEntity<Void> createTeam(TeamCreateUpdateRequest request) {
-        logger.info("Team create| Contest participation request: " + request.getName());
-        studentService.createUpdateTeam(request);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Void> updatePresentationURL(SetUrlRequest request){
+        logger.info("Team update | Set presentation URL: " + request.getUrl());
+        studentService.updatePresentationURL(request.getUrl());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> updatePresentationURL(InlineObject request){
-        logger.info("Team update | Set presentation URL: " + request.getPresentationURL());
-        studentService.updatePresentationURL(request.getPresentationURL());
+    public ResponseEntity<Void> updateArticleURL(SetUrlRequest request){
+        logger.info("Team update | Set presentation URL: " + request.getUrl());
+        studentService.updatePresentationURL(request.getUrl());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -47,6 +47,12 @@ public class StudentController implements StudentApi {
     public ResponseEntity<FileUploadResponse> uploadAndSetPresentation(MultipartFile file){
         logger.info("upload presentation");
         return ResponseEntity.ok(storageService.uploadParticipantPresentation(file));
+    }
+
+    @Override
+    public ResponseEntity<FileUploadResponse> uploadAndSetArticle(MultipartFile file){
+        logger.info("upload article");
+        return ResponseEntity.ok(storageService.uploadParticipantArticle(file));
     }
 
     @Override
