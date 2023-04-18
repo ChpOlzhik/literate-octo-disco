@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,7 +97,8 @@ public class SecretaryService {
 
     public void updateDefence(Long defenceId, CreateDefenceRequest request){
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Team with id: " + defenceId + " not found"));
-        defence.setStage(defence.getStage());
+        Stage stage = stageRepository.findById(request.getStageId()).orElseThrow(() -> new EntityNotFoundException("Stage with id: " + request.getStageId() + " not found"));
+        defence.setStage(stage);
         defenceRepository.saveAndFlush(defence);
         userCommissionGradeRepository.deleteAllByDefenceId(defenceId);
         this.setDefenceCommission(defence, request.getCommissions());
@@ -172,13 +171,19 @@ public class SecretaryService {
                 .build();
     }
 
-    public void setFinalGrade(Long defenceId, Long userId, GradeDto gradeDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id: " + userId + " not found"));
+    public void setFinalGrade(Long defenceId, GradeDto gradeDto) {
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
-        List<UserCommissionGrade> grades = userCommissionGradeRepository.findAllByDefenceIdAndStudentId(defenceId, userId);
-        UserGrade finalGrade = userGradeRepository.findByDefenceIdAndStudentId(defenceId, userId);
+        User user = defence.getTeam().getCreator();
+        List<UserCommissionGrade> grades = userCommissionGradeRepository.findAllByDefenceIdAndStudentId(defenceId, user.getId());
+        Map<Long, Integer> mp = new HashMap<>();
+        grades.forEach(grade -> {
+            logger.info("--------------- GRADES: " + grade.getGrade());
+            Integer initial = mp.getOrDefault(grade.getCommission().getId(), 0);
+            mp.put(grade.getCommission().getId(), initial + grade.getGrade());
+        });
+        UserGrade finalGrade = userGradeRepository.findByDefenceIdAndStudentId(defenceId, user.getId());
         if (finalGrade != null) {
-            finalGrade.setFirstGrade(grades.stream().mapToInt(UserCommissionGrade::getGrade).sum() / grades.size());
+            finalGrade.setFirstGrade(mp.values().stream().mapToInt(Integer::intValue).sum() / mp.size());
             finalGrade.setFinalGrade(gradeDto.getGrade());
             userRepository.save(user);
         } else {

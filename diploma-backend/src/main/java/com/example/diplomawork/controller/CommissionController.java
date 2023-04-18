@@ -23,14 +23,19 @@ public class CommissionController implements CommissionApi {
     }
 
     @Override
-    public ResponseEntity<Void> setGrade(Long defenceId, Long studentId, GradeDto gradeDto) {
-        commissionService.setGrade(defenceId, studentId, gradeDto);
+    public ResponseEntity<Void> setGrade(Long defenceId, List<GradeCriteriaDto> grades) {
+        commissionService.setGrade(defenceId, grades);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<DefenceInfoByBlocksDto> getCommissionDefence(Long defenceId) {
         return ResponseEntity.ok(commissionService.getCommissionDefence(defenceId));
+    }
+
+    @Override
+    public ResponseEntity<List<CriteriaDto>> getCriteries(Long stageId){
+        return ResponseEntity.ok(commissionService.getCriteries(stageId));
     }
 
 

@@ -22,4 +22,7 @@ public class Stage {
 
     @OneToMany(mappedBy = "stage", fetch = FetchType.LAZY)
     List<Defence> stageDefences;
+
+    @OneToMany(mappedBy = "stage", fetch = FetchType.LAZY)
+    List<Criteria> criteries;
 }

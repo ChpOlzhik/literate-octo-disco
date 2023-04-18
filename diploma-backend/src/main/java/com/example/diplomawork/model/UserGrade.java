@@ -1,7 +1,6 @@
 package com.example.diplomawork.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Getter

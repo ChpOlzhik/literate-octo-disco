@@ -33,7 +33,7 @@ public class StudentController implements StudentApi {
     @Override
     public ResponseEntity<Void> updateArticleURL(SetUrlRequest request){
         logger.info("Team update | Set presentation URL: " + request.getUrl());
-        studentService.updatePresentationURL(request.getUrl());
+        studentService.updateArticleURL(request.getUrl());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -66,6 +66,11 @@ public class StudentController implements StudentApi {
     public ResponseEntity<FileUploadResponse> uploadAndSetApplicationForm(MultipartFile file){
         logger.info("Application form upload request");
         return ResponseEntity.ok(storageService.uploadParticipantApplicationForm(file));
+    }
+
+    @Override
+    public ResponseEntity<List<UserGradeFullDto>> getGradesByStageId(Long stageId){
+        return ResponseEntity.ok(studentService.getGradesFull(stageId));
     }
 
 }

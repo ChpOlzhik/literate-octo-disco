@@ -2,7 +2,6 @@ package com.example.diplomawork.model;
 
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Getter
@@ -28,6 +27,9 @@ public class UserCommissionGrade {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "defence_id", nullable = false)
     private Defence defence;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Criteria criteria;
 
     private Integer grade;
 }

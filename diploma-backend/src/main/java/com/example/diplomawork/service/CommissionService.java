@@ -1,5 +1,6 @@
 package com.example.diplomawork.service;
 
+import com.example.diplomawork.mapper.CriteriaMapper;
 import com.example.diplomawork.mapper.DefenceMapper;
 import com.example.diplomawork.mapper.TeamMapper;
 import com.example.diplomawork.mapper.UserMapper;
@@ -36,6 +37,12 @@ public class CommissionService {
 
     private final DefenceMapper defenceMapper;
 
+    private final CriteriaRepository criteriaRepository;
+
+    private final StageRepository stageRepository;
+
+    private final CriteriaMapper criteriaMapper;
+
     public DefenceInfoByBlocksDto getCommissionDefence(Long defenceId) {
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
         Team team = defence.getTeam();
@@ -50,21 +57,31 @@ public class CommissionService {
     }
 
 
-    public void setGrade(Long defenceId, Long studentId, GradeDto grade) {
-        User student = userRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("User with id: " + studentId + " not found"));
+    public void setGrade(Long defenceId, List<GradeCriteriaDto> gradeDtos) {
         User commission = authService.getCurrentUser();
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
-        UserCommissionGrade userCommissionGrade = userCommissionGradeRepository.findByCommissionIdAndStudentIdAndDefenceId(commission.getId(), student.getId(), defence.getId());
-        if (userCommissionGrade == null) {
-            userCommissionGrade = UserCommissionGrade.builder()
-                    .id(null)
-                    .commission(commission)
-                    .defence(defence)
-                    .student(student)
-                    .build();
-        }
-        userCommissionGrade.setGrade(grade.getGrade());
-        userCommissionGradeRepository.save(userCommissionGrade);
+        User student = defence.getTeam().getCreator();
+        gradeDtos.forEach(gradeCriteriaDto -> {
+            Criteria criteria = criteriaRepository.findById(gradeCriteriaDto.getCriteria()).orElseThrow(() -> new EntityNotFoundException("No such criteria :" + gradeCriteriaDto.getCriteria()));
+            UserCommissionGrade userCommissionGrade = userCommissionGradeRepository.findByCommissionIdAndStudentIdAndDefenceIdAndCriteriaId(commission.getId(), student.getId(), defence.getId(), gradeCriteriaDto.getCriteria());
+            if (userCommissionGrade == null) {
+                userCommissionGrade = UserCommissionGrade.builder()
+                        .id(null)
+                        .commission(commission)
+                        .defence(defence)
+                        .student(defence.getTeam().getCreator())
+                        .criteria(criteria)
+                        .build();
+            }
+
+            userCommissionGrade.setGrade(gradeCriteriaDto.getGrade());
+            userCommissionGradeRepository.saveAndFlush(userCommissionGrade);
+        });
+    }
+
+    public List<CriteriaDto> getCriteries(Long stageId){
+        Stage stage = stageRepository.findById(stageId).orElseThrow(() -> new EntityNotFoundException("Stage not found with id: " + stageId));
+        return  stage.getCriteries().stream().map(criteriaMapper::entity2dto).collect(Collectors.toList());
     }
 
     public List<DefenceShortInfoDto> getCommissionDefences() {

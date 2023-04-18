@@ -66,8 +66,8 @@ public class SecretaryController implements SecretaryApi {
     }
 
     @Override
-    public ResponseEntity<Void> setFinalGrade(Long defenceId, Long userId, GradeDto gradeDto) {
-        secretaryService.setFinalGrade(defenceId, userId, gradeDto);
+    public ResponseEntity<Void> setFinalGrade(Long defenceId, GradeDto gradeDto) {
+        secretaryService.setFinalGrade(defenceId, gradeDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
