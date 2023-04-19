@@ -1182,7 +1182,9 @@ components:
         stageName:
           type: string
         grade:
-          type: integer
+          type: array
+          items:
+            $ref: '#/components/schemas/GradeCriteriaDto'
 
     StudentWithGradesDto:
       description: student with grade

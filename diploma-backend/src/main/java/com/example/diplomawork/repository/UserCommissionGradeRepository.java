@@ -13,7 +13,7 @@ public interface UserCommissionGradeRepository extends JpaRepository<UserCommiss
 
     List<UserCommissionGrade> findAllByStudentId(Long studentId);
 
-    UserCommissionGrade findByCommissionIdAndStudentIdAndDefenceId(Long commissionId, Long studentId, Long defenceId);
+    List<UserCommissionGrade> findAllByCommissionIdAndStudentIdAndDefenceId(Long commissionId, Long studentId, Long defenceId);
 
     UserCommissionGrade findByCommissionIdAndStudentIdAndDefenceIdAndCriteriaId(Long commissionId, Long studentId, Long defenceId, Long criteriaId);
 

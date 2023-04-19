@@ -111,11 +111,12 @@ public class CommissionService {
         User commission = authService.getCurrentUser();
         Defence defence = defenceRepository.findById(defenceId).orElseThrow(() -> new EntityNotFoundException("Defence with id: " + defenceId + " not found"));
         User student = defence.getTeam().getCreator();
-        UserCommissionGrade grade = userCommissionGradeRepository.findByCommissionIdAndStudentIdAndDefenceId(commission.getId(), student.getId(), defenceId);
+        List<UserCommissionGrade> grades = userCommissionGradeRepository.findAllByCommissionIdAndStudentIdAndDefenceId(commission.getId(), student.getId(), defenceId);
         return StudentWithGradeDto.builder()
                 .fullName(student.getLastName() + student.getFirstName())
                 .stageName(defence.getStage().getName())
-                .grade(grade.getGrade())
+                .grade(grades.stream().map(grade->
+                        GradeCriteriaDto.builder().criteria(grade.getCriteria().getId()).grade(grade.getGrade()).build()).collect(Collectors.toList()))
                 .build();
     }
 }
