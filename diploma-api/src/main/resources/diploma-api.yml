@@ -1666,6 +1666,10 @@ components:
           type: string
         stage:
           type: string
+        grades:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradeCriteriaDto'
 
     StageDto:
       type: object

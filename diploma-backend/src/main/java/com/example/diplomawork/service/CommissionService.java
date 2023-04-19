@@ -90,11 +90,15 @@ public class CommissionService {
         List<DefenceShortInfoDto> list = new ArrayList<>();
         defenceCommissions.forEach(defenceCommission -> {
             Defence defence = defenceCommission.getDefence();
+            List<UserCommissionGrade> grades = userCommissionGradeRepository.findAllByDefenceIdAndCommissionId(defence.getId(), currentUser.getId());
+
             DefenceShortInfoDto build = DefenceShortInfoDto.builder()
                     .id(defence.getId())
                     .defenceDate(defenceCommission.getDefence().getDefenceDate())
                     .team(defenceCommission.getDefence().getTeam().getName())
                     .stage(defence.getStage().getName())
+                    .grades(grades.stream().map(grade->
+                            GradeCriteriaDto.builder().criteria(grade.getCriteria().getId()).grade(grade.getGrade()).build()).collect(Collectors.toList()))
                     .build();
             list.add(build);
         });
